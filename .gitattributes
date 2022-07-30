@@ -1,0 +1,4 @@
+*.min.js diff=minjs
+
+yarn.lock binary
+package-lock.json binary

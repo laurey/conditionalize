@@ -1,0 +1,6 @@
+{
+    "verbose": true,
+    "exitcrash": true,
+    "delay": "1500",
+    "watch": ["src/**"]
+}

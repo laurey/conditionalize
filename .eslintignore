@@ -1,0 +1,9 @@
+!.eslintrc.js
+*.svg
+*.png
+*.jpg
+*.html
+/dist
+/coverage
+/out
+/build
