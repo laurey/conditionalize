@@ -8,6 +8,13 @@
   "module": "es/conditionalize.js",
   "browser": "dist/conditionalize.js",
   "description": "A library of conditions builder and validator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/laurey/conditionalize.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "scripts": {
     "build:browser": "rollup -c --environment BABEL_ENV:browser,NODE_ENV:production --env=browser",
     "build:es": "rollup -c --environment BABEL_ENV:es,NODE_ENV:production --env=es",
@@ -59,7 +66,6 @@
     "eslint-config-prettier": "^6.15.0",
     "jest": "^29.3.0",
     "lodash": "^4.17.20",
-    "moment": "^2.25.0",
     "np": "^7.6.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.4.1",
@@ -72,16 +78,11 @@
     "rollup-plugin-external-globals": "^0.6.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-terser": "^7.0.0",
-    "typescript": "^4.1.2",
-    "uuid": "^8.3.2",
-    "validator": "^13.7.0"
+    "typescript": "^4.1.2"
   },
   "peerDependencies": {
     "bluebird": "*",
-    "lodash": "*",
-    "moment": "*",
-    "uuid": "*",
-    "validator": "*"
+    "lodash": "*"
   },
   "engines": {
     "node": ">=12.0"
