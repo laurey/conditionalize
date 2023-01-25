@@ -1,6 +1,6 @@
 {
   "name": "conditionalize",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "author": "Luis",
   "license": "MIT",
   "type": "module",
@@ -22,6 +22,7 @@
     "start": "nodemon --exec 'npm run dev'",
     "prebuild": "npm run clean",
     "pretest": "npm run build",
+    "release": "np",
     "serve": "serve public",
     "test": "jest",
     "test:watch": "jest --watch",
