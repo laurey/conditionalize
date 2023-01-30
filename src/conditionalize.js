@@ -1,6 +1,6 @@
 import _ from 'lodash';
+
 import Op from './operators';
-import Promise from './promise';
 import * as Utils from './utils';
 import { version } from '../package.json';
 import Validator from './validator-extras';
@@ -506,7 +506,6 @@ class Conditionalize {
 
 Conditionalize.Op = Op;
 Conditionalize.Utils = Utils;
-Conditionalize.Promise = Promise;
 Conditionalize.version = version;
 
 Conditionalize.prototype.and = Conditionalize.and;

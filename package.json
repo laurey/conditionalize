@@ -3,10 +3,9 @@
   "version": "0.0.2",
   "author": "Luis",
   "license": "MIT",
-  "type": "module",
   "main": "lib/conditionalize.js",
   "module": "es/conditionalize.js",
-  "browser": "dist/conditionalize.js",
+  "unpkg": "dist/conditionalize.min.js",
   "description": "A library of conditions builder and validator",
   "repository": {
     "type": "git",
@@ -28,7 +27,6 @@
     "dev": "run-p serve watch",
     "start": "nodemon --exec 'npm run dev'",
     "prebuild": "npm run clean",
-    "pretest": "npm run build",
     "release": "np",
     "serve": "serve public",
     "test": "jest",
@@ -60,7 +58,6 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
     "babel-plugin-add-module-exports": "^1.0.4",
-    "bluebird": "^3.7.2",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^6.15.0",
@@ -81,7 +78,6 @@
     "typescript": "^4.1.2"
   },
   "peerDependencies": {
-    "bluebird": "*",
     "lodash": "*"
   },
   "engines": {
@@ -98,12 +94,15 @@
   ],
   "keywords": [
     "assert",
+    "condition",
+    "conditions",
     "conditional",
     "validate",
     "validator",
     "validation",
     "promise",
     "when",
+    "where",
     "object",
     "class",
     "node"
