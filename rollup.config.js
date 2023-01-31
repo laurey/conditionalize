@@ -13,7 +13,7 @@ const outputFileName = 'conditionalize';
 const name = 'Conditionalize';
 const defaultInput = path.resolve(__dirname, 'src/conditionalize.js');
 
-const buildConfig = ({ browser = true, minifiedVersion = false, output, ...config }) => {
+const buildConfig = ({ browser = false, minifiedVersion = false, output, ...config }) => {
     const getOutputFile = (item, minified) => {
         const { file } = item;
         const ext = path.extname(file);
@@ -103,20 +103,18 @@ const buildCJSConfig = ({ input, name, banner }) => {
 const buildUMDConfig = ({ name, banner, input }) => {
     return buildConfig({
         input,
+        browser: true,
         minifiedVersion: true,
         external: [/@babel\/runtime/],
         output: [
             {
                 name,
                 banner,
-                file: pkg.browser ?? `dist/${outputFileName}.js`,
+                file: `dist/${outputFileName}.js`,
                 format: 'umd',
                 exports: 'default',
                 globals: {
-                    lodash: '_',
-                    bluebird: 'P',
-                    moment: 'moment',
-                    validator: 'validator'
+                    lodash: '_'
                 }
             },
             {
@@ -127,10 +125,10 @@ const buildUMDConfig = ({ name, banner, input }) => {
                 exports: 'default',
                 sourcemap: true,
                 globals: {
-                    lodash: '_',
-                    bluebird: 'P',
-                    moment: 'moment',
-                    validator: 'validator'
+                    lodash: '_'
+                    // bluebird: 'P',
+                    // moment: 'moment',
+                    // validator: 'validator'
                 }
             }
         ],
@@ -152,7 +150,6 @@ export default async args => {
     const env = args?.env ?? 'es';
     const year = new Date().getFullYear();
     const banner = `// Conditionalize v${pkg.version} Copyright (c) ${year} ${pkg.author} and contributors`;
-    // console.log('rollup.env ===> ', env);
 
     switch (env) {
         case 'es':
@@ -160,8 +157,8 @@ export default async args => {
             return buildESMConfig({ name, input, banner });
             break;
 
-        case 'browser':
         case 'umd':
+        case 'browser':
             return buildUMDConfig({ name, input, banner });
             break;
 

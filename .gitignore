@@ -10,8 +10,9 @@
 
 # production
 /build
-/dist
+/output
 /public
+/dist
 /lib
 /es
 
