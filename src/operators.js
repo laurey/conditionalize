@@ -19,14 +19,10 @@
  * @property startsWith
  * @property endsWith
  * @property substring
- * @property between
- * @property notBetween
  * @property and
  * @property or
  * @property any
  * @property all
- * @property values
- * @property col
  */
 const Op = {
     eq: Symbol.for('eq'),

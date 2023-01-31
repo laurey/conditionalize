@@ -5,7 +5,7 @@
   "license": "MIT",
   "main": "lib/conditionalize.js",
   "module": "es/conditionalize.js",
-  "unpkg": "dist/conditionalize.min.js",
+  "browser": "dist/conditionalize.min.js",
   "description": "A library of conditions builder and validator",
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "serve": "serve public",
     "test": "jest",
     "test:watch": "jest --watch",
+    "version": "npm run build",
     "watch": "rollup -c -w"
   },
   "devDependencies": {
@@ -87,24 +88,21 @@
     "es",
     "esm",
     "lib",
-    "dist",
-    "LICENSE",
-    "README.md",
-    "package.json"
+    "dist"
   ],
   "keywords": [
     "assert",
     "condition",
-    "conditions",
     "conditional",
+    "when",
+    "where",
     "validate",
     "validator",
     "validation",
     "promise",
-    "when",
-    "where",
-    "object",
-    "class",
+    "es6",
+    "commonjs",
+    "browser",
     "node"
   ]
 }
