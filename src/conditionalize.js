@@ -19,7 +19,6 @@ class Conditionalize {
             this.setOperatorsAliases(this.options.operatorsAliases);
         }
 
-        // this.dataSource = this.options.dataSource ?? {};
         this.OperatorMap = Object.assign(this.options.operatorsMap || {}, this.OperatorMap);
     }
 
@@ -32,7 +31,6 @@ class Conditionalize {
         if (_.isPlainObject(this.options.operatorsMap)) {
             this.updateOperators(this.options.operatorsMap);
         }
-        // this.dataSource = this.options?.dataSource;
     }
 
     check(options, model) {
@@ -401,7 +399,6 @@ class Conditionalize {
         }
 
         if (typeof where === 'string') {
-            // throw new Error("Support for `{where: 'raw query'}` has been removed.");
             return Boolean(where);
         }
 

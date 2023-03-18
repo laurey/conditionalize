@@ -341,6 +341,8 @@ describe('Conditionalize method test', () => {
             });
         };
 
+        testQuery(null, {}, true);
+        testQuery(undefined, {}, true);
         testQuery({}, {}, true);
         testQuery([], {}, true);
 
@@ -417,6 +419,82 @@ describe('Conditionalize method test', () => {
         );
     });
 
+    describe('whereItemsQuery method', () => {
+        const testQuery = function (where, options, expectation) {
+            if (expectation === undefined) {
+                expectation = options;
+                options = undefined;
+            }
+
+            it(`${util.inspect(where, { depth: 10 })}: ${(options && `, ${util.inspect(options)}`) || ''}`, () => {
+                const ins = new Conditionalize();
+                return expect(ins.whereItemsQuery(where, options)).toBe(expectation);
+            });
+        };
+
+        testQuery(
+            null,
+            {
+                dataSource: {
+                    name: 'html'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            undefined,
+            {
+                dataSource: {
+                    name: 'css'
+                }
+            },
+            true
+        );
+        testQuery(
+            {},
+            {
+                dataSource: {
+                    name: 'less',
+                    age: 11
+                }
+            },
+            true
+        );
+        testQuery(
+            [],
+            {
+                dataSource: {
+                    name: 'pie',
+                    age: 22
+                }
+            },
+            true
+        );
+        testQuery(
+            'name',
+            {
+                dataSource: {
+                    name: 'beer',
+                    age: 22
+                }
+            },
+            true
+        );
+        testQuery(
+            {
+                name: 'horse'
+            },
+            {
+                dataSource: {
+                    name: 'horse',
+                    age: 33
+                }
+            },
+            true
+        );
+    });
+
     describe('whereItemQuery method', () => {
         const testQuery = function (key, value, options, expectation) {
             if (expectation === undefined) {
@@ -433,20 +511,11 @@ describe('Conditionalize method test', () => {
         };
 
         testQuery(
-            undefined,
-            'city',
-            {
-                dataSource: {}
-            },
-            true
-        );
-
-        testQuery(
             'name',
-            null,
+            'juice',
             {
                 dataSource: {
-                    name: null
+                    name: 'juice'
                 }
             },
             true
@@ -493,8 +562,8 @@ describe('Conditionalize method test', () => {
                     [
                         {
                             name: {
-                                [Op.like]: ['^(Ge)', 'i'] // also works
-                                // [Op.like]: /^gE/i
+                                // [Op.like]: /^gE/i, // also works
+                                [Op.like]: ['^(Ge)', 'i']
                             }
                         },
                         {
@@ -1133,7 +1202,8 @@ describe('Conditionalize method test', () => {
         });
 
         describe('SUPPORTS Value Array Type', () => {
-            describe('Op.contains', () => {});
+            // describe('Op.contains', () => {});
+
             describe('Op.any', () => {
                 testQuery(
                     'name',
@@ -1361,18 +1431,48 @@ describe('Conditionalize method test', () => {
     });
 
     describe('getWhereConditions method', () => {
-        const testQuery = function (value, options, expectation) {
+        const testQuery = function (smth, options, expectation) {
             if (expectation === undefined) {
                 expectation = options;
                 options = undefined;
             }
 
             const ins = new Conditionalize(options);
-            it(`${util.inspect(value, { depth: 10 })}${(options && `, ${util.inspect(options)}`) || ''}`, () => {
-                return expect(ins.getWhereConditions(value)).toBe(expectation);
+            it(`${util.inspect(smth, { depth: 10 })}${(options && `, ${util.inspect(options)}`) || ''}`, () => {
+                return expect(ins.getWhereConditions(smth)).toBe(expectation);
             });
         };
 
+        testQuery(
+            null,
+            {
+                dataSource: {
+                    hours: 1,
+                    minutes: 11
+                }
+            },
+            true
+        );
+        testQuery(
+            undefined,
+            {
+                dataSource: {
+                    hours: 2,
+                    seconds: 22
+                }
+            },
+            true
+        );
+        testQuery(
+            {},
+            {
+                dataSource: {
+                    hours: 3,
+                    seconds: 55
+                }
+            },
+            true
+        );
         testQuery(
             {
                 hours: { [Op.gt]: 2 }
