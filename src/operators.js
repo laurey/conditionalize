@@ -16,11 +16,11 @@
  * @property notIn
  * @property like
  * @property notLike
- * @property startsWith
  * @property endsWith
+ * @property startsWith
  * @property substring
- * @property and
  * @property or
+ * @property and
  * @property any
  * @property all
  */
