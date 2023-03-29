@@ -52,7 +52,8 @@ export const addValidationMethod = (name, method) => {
         throw new Error('Error: method must be function');
     }
 
-    validator[name] = method;
+    // validator[name] = method;
+    validator.extend(name, method);
 };
 
 export const addValidationMethods = methods => {

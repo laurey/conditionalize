@@ -186,6 +186,10 @@ class Conditionalize {
 
     _getLikeValue(key, value, prop, options) {
         const targetValue = _.get(options.dataSource, key);
+        // if (typeof targetValue !== 'string') {
+        //     throw new Error(`Invalid key value type: ${key}`);
+        // }
+
         let validatorType = this.OperatorMap[prop];
         if (prop === Op.is || prop === Op.not) {
             validatorType = this.OperatorMap[prop].toLowerCase();
@@ -229,18 +233,18 @@ class Conditionalize {
             case Op.is:
             case Op.like:
                 return this._getLikeValue(key, value, Op.is, options);
-            case Op.isDate:
-                return this._getLikeValue(key, value, Op.isDate, options);
+            // case Op.isDate:
+            //     return this._getLikeValue(key, value, Op.isDate, options);
             case Op.not:
             case Op.notLike:
                 return this._getLikeValue(key, value, Op.not, options);
             case Op.in:
             case Op.notIn:
                 return prop === Op.in ? _.includes(value, targetValue) : !_.includes(value, targetValue);
-            case Op.between:
-                return this._getBetweenValue(value, targetValue);
-            case Op.notBetween:
-                return !this._getBetweenValue(value, targetValue);
+            // case Op.between:
+            //     return this._getBetweenValue(value, targetValue);
+            // case Op.notBetween:
+            //     return !this._getBetweenValue(value, targetValue);
             case Op.startsWith:
                 return _.startsWith(targetValue, value);
             case Op.endsWith:
