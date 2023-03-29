@@ -1,5 +1,5 @@
 import util from 'util';
-import Conditionalize from '../es/conditionalize';
+import Conditionalize from '../src/conditionalize';
 
 const { Op } = Conditionalize;
 
@@ -820,7 +820,7 @@ describe('Conditionalize method test', () => {
             });
         });
 
-        describe.skip('Op.col', () => {
+        describe('Op.col', () => {
             testQuery(
                 'name',
                 { [Op.col]: 'alias' },
@@ -1415,7 +1415,7 @@ describe('Conditionalize method test', () => {
                     'foods',
                     {
                         [Op.notLike]: {
-                            [Op.all]: ['corn', 'rice']
+                            [Op.all]: ['corn', 'rice', 'BEEF']
                         }
                     },
                     {

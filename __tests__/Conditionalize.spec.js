@@ -1,5 +1,5 @@
 import util from 'util';
-import Conditionalize from '../es/conditionalize';
+import Conditionalize from '../src/conditionalize';
 
 const { Op } = Conditionalize;
 

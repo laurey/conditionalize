@@ -24,10 +24,13 @@ const OperatorHelpers = {
         [Op.startsWith]: 'LIKE',
         [Op.endsWith]: 'LIKE',
         [Op.substring]: 'LIKE',
-        [Op.any]: 'ANY',
+        [Op.or]: 'OR',
         [Op.all]: 'ALL',
         [Op.and]: 'AND',
-        [Op.or]: 'OR'
+        [Op.any]: 'ANY',
+        [Op.col]: 'COL',
+        [Op.between]: 'BETWEEN',
+        [Op.notBetween]: 'NOT BETWEEN'
         // custom
         // [Op.isDate]: 'isDate'
         // [Op.isIPv4]: 'isIPv4'
