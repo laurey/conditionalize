@@ -1,6 +1,4 @@
-// import moment from 'moment';
-
-const validator = {
+const extensions = {
     extend(name, fn) {
         this[name] = fn;
 
@@ -27,22 +25,6 @@ const validator = {
     }
 };
 
-// extra validators
-validator.notNull = function (val) {
-    return val !== null && val !== undefined;
-};
-validator.like = validator.is;
-
-// validator.isDate = function (dateString) {
-//     const parsed = Date.parse(dateString);
-//     if (isNaN(parsed)) {
-//         return false;
-//     }
-
-//     const date = new Date(parsed);
-//     return moment(date.toISOString()).isValid();
-// };
-
 export const addValidationMethod = (name, method) => {
     if (typeof name !== 'string') {
         throw new Error('Error: name must be string');
@@ -52,8 +34,8 @@ export const addValidationMethod = (name, method) => {
         throw new Error('Error: method must be function');
     }
 
-    // validator[name] = method;
-    validator.extend(name, method);
+    // extensions[name] = method;
+    extensions.extend(name, method);
 };
 
 export const addValidationMethods = methods => {
@@ -61,11 +43,11 @@ export const addValidationMethods = methods => {
         throw new Error('Error: methods must be object');
     }
 
-    Object.keys(methods).forEach(methodName => {
-        if (Object.prototype.hasOwnProperty.call(methods, methodName)) {
-            addValidationMethod(methodName, methods[methodName]);
+    Object.keys(methods).forEach(name => {
+        if (Object.prototype.hasOwnProperty.call(methods, name)) {
+            addValidationMethod(name, methods[name]);
         }
     });
 };
 
-export default validator;
+export { extensions };

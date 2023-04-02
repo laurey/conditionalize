@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Op from './operators';
 import * as Utils from './utils';
 import { version } from '../package.json';
-import Validator from './validator-extras';
+import { extensions as Validator } from './validator-extras';
 import OperatorHelpers from './operatorHelpers';
 
 class Conditionalize {
@@ -300,7 +300,8 @@ class Conditionalize {
 
             if (value[Op.any]) {
                 let binding = Op.or;
-                if (prop === Op.not || prop === Op.notLike || prop === Op.notBetween || prop === Op.notIn) {
+                // if (prop === Op.not || prop === Op.notLike || prop === Op.notBetween || prop === Op.notIn) {
+                if (prop === Op.not || prop === Op.notLike || prop === Op.notIn) {
                     binding = Op.and;
                 }
 

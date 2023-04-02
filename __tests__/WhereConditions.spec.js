@@ -938,6 +938,7 @@ describe('Conditionalize method test', () => {
                 true
             );
         });
+
         describe('Op.gt/Op.gte', () => {
             testQuery(
                 'count',
@@ -981,6 +982,7 @@ describe('Conditionalize method test', () => {
             //     true
             // );
         });
+
         describe('Op.lt/Op.lte', () => {
             testQuery(
                 'count',
@@ -1008,20 +1010,21 @@ describe('Conditionalize method test', () => {
                 true
             );
 
-            // testQuery(
-            //     'count',
-            //     {
-            //         [Op.lte]: { [Op.col]: 'total' }
-            //     },
-            //     {
-            //         dataSource: {
-            //             total: 2,
-            //             count: 10
-            //         }
-            //     },
-            //     false
-            // );
+            testQuery(
+                'total',
+                {
+                    [Op.lte]: { [Op.col]: 'count' }
+                },
+                {
+                    dataSource: {
+                        total: 2,
+                        count: 10
+                    }
+                },
+                true
+            );
         });
+
         describe('Op.in/Op.notIn', () => {
             testQuery(
                 'name',
@@ -1075,6 +1078,7 @@ describe('Conditionalize method test', () => {
                 true
             );
         });
+
         describe('Op.ne/Op.eq', () => {
             testQuery(
                 'name',
@@ -1145,6 +1149,89 @@ describe('Conditionalize method test', () => {
             );
 
             testQuery(
+                'name',
+                {
+                    [Op.like]: {
+                        [Op.any]: ['larry', 'mario']
+                    }
+                },
+                {
+                    dataSource: {
+                        name: 'mario'
+                    }
+                },
+                true
+            );
+
+            testQuery(
+                'name',
+                {
+                    [Op.like]: {
+                        [Op.all]: ['rose', 'mario']
+                    }
+                },
+                {
+                    dataSource: {
+                        name: ['rose', 'mario']
+                    }
+                },
+                true
+            );
+
+            // testQuery(
+            //     'alias',
+            //     {
+            //         [Op.like]: {
+            //             [Op.any]: { [Op.col]: 'name' }
+            //         }
+            //         // [Op.like]: [
+            //         //     {
+            //         //         [Op.col]: 'name'
+            //         //     },
+            //         //     'i'
+            //         // ]
+            //     },
+            //     {
+            //         dataSource: {
+            //             name: ['tulip1', 'orchid1'],
+            //             alias: ['tulip', 'orchid', 'sakura']
+            //         }
+            //     },
+            //     false
+            // );
+
+            testQuery(
+                'name',
+                {
+                    [Op.notLike]: {
+                        [Op.any]: ['lucy', 'tulip']
+                    }
+                },
+                {
+                    dataSource: {
+                        name: 'mach'
+                    }
+                },
+                true
+            );
+
+            testQuery(
+                'foods',
+                {
+                    [Op.notLike]: {
+                        [Op.all]: ['corn', 'rice', 'BEEF']
+                    }
+                },
+                {
+                    dataSource: {
+                        cats: ['apple', 'peach'],
+                        foods: 'beef'
+                    }
+                },
+                true
+            );
+
+            testQuery(
                 'username',
                 {
                     [Op.notLike]: ['mary$', 'i']
@@ -1199,234 +1286,199 @@ describe('Conditionalize method test', () => {
                 },
                 true
             );
+
+            testQuery(
+                'langs',
+                {
+                    [Op.substring]: 'css'
+                },
+                {
+                    dataSource: {
+                        langs: ['js', 'html', 'css', 'node', 'python', 'go']
+                    }
+                },
+                true
+            );
+
+            testQuery(
+                'lan',
+                {
+                    [Op.substring]: 3
+                },
+                {
+                    dataSource: {
+                        lan: {
+                            a: 1,
+                            b: 2,
+                            c: 3
+                        }
+                    }
+                },
+                true
+            );
         });
 
-        describe('SUPPORTS Value Array Type', () => {
-            // describe('Op.contains', () => {});
+        describe.skip('Op.contains', () => {});
 
-            describe('Op.any', () => {
-                testQuery(
-                    'name',
-                    {
-                        [Op.any]: ['larry', 'may']
-                    },
-                    {
-                        dataSource: {
-                            name: 'may'
-                        }
-                    },
-                    true
-                );
+        describe('Op.any', () => {
+            testQuery(
+                'name',
+                {
+                    [Op.any]: ['larry', 'may']
+                },
+                {
+                    dataSource: {
+                        name: 'may'
+                    }
+                },
+                true
+            );
 
-                testQuery(
-                    'userId',
-                    {
-                        [Op.any]: [1, 10, 15, 18]
-                    },
-                    {
-                        dataSource: {
-                            userId: 10
-                        }
-                    },
-                    true
-                );
+            testQuery(
+                'userId',
+                {
+                    [Op.any]: [1, 10, 15, 18]
+                },
+                {
+                    dataSource: {
+                        userId: 10
+                    }
+                },
+                true
+            );
 
-                testQuery(
-                    'userId',
-                    {
-                        [Op.any]: {
-                            [Op.values]: [11, 10, 15, 19]
-                        }
-                    },
-                    {
-                        dataSource: {
-                            userId: 11
-                        }
-                    },
-                    true
-                );
+            testQuery(
+                'userId',
+                {
+                    [Op.any]: {
+                        [Op.values]: [11, 10, 15, 19]
+                    }
+                },
+                {
+                    dataSource: {
+                        userId: 11
+                    }
+                },
+                true
+            );
 
-                testQuery(
-                    'grades',
-                    {
-                        [Op.gt]: {
-                            [Op.any]: [6, 10, 16, 19]
-                        }
-                    },
-                    {
-                        dataSource: {
-                            grades: 10
-                        }
-                    },
-                    true
-                );
+            testQuery(
+                'grades',
+                {
+                    [Op.gt]: {
+                        [Op.any]: [6, 10, 16, 19]
+                    }
+                },
+                {
+                    dataSource: {
+                        grades: 10
+                    }
+                },
+                true
+            );
 
-                testQuery(
-                    'grades',
-                    {
-                        [Op.notIn]: {
-                            [Op.any]: [3, 13, 6, 15, 18]
-                        }
-                    },
-                    {
-                        dataSource: {
-                            grades: 6
-                        }
-                    },
-                    false
-                );
-            });
+            testQuery(
+                'grades',
+                {
+                    [Op.notIn]: {
+                        [Op.any]: [3, 13, 6, 15, 18]
+                    }
+                },
+                {
+                    dataSource: {
+                        grades: 6
+                    }
+                },
+                false
+            );
+        });
 
-            describe('Op.all', () => {
-                testQuery(
-                    'name',
-                    {
-                        [Op.all]: ['jim', 'may']
-                    },
-                    {
-                        dataSource: {
-                            name: ['jim', 'may']
-                        }
-                    },
-                    true
-                );
+        describe('Op.all', () => {
+            testQuery(
+                'name',
+                {
+                    [Op.all]: ['jim', 'may']
+                },
+                {
+                    dataSource: {
+                        name: ['jim', 'may']
+                    }
+                },
+                true
+            );
 
-                testQuery(
-                    'userId',
-                    {
-                        [Op.all]: [1, 10]
-                    },
-                    {
-                        dataSource: {
-                            userId: [1, 10]
-                        }
-                    },
-                    true
-                );
+            testQuery(
+                'userId',
+                {
+                    [Op.all]: [1, 10]
+                },
+                {
+                    dataSource: {
+                        userId: [1, 10]
+                    }
+                },
+                true
+            );
 
-                testQuery(
-                    'sales_by_season',
-                    {
-                        [Op.all]: {
-                            [Op.values]: [11, 10]
-                        }
-                    },
-                    {
-                        dataSource: {
-                            sales_by_season: [11, 10]
-                        }
-                    },
-                    true
-                );
+            testQuery(
+                'sales_by_season',
+                {
+                    [Op.all]: {
+                        [Op.values]: [11, 10]
+                    }
+                },
+                {
+                    dataSource: {
+                        sales_by_season: [11, 10]
+                    }
+                },
+                true
+            );
 
-                testQuery(
-                    'grades',
-                    {
-                        [Op.gt]: {
-                            [Op.all]: [11, 10, 17, 19]
-                        }
-                    },
-                    {
-                        dataSource: {
-                            grades: 25
-                        }
-                    },
-                    true
-                );
+            testQuery(
+                'grades',
+                {
+                    [Op.gt]: {
+                        [Op.all]: [11, 10, 17, 19]
+                    }
+                },
+                {
+                    dataSource: {
+                        grades: 25
+                    }
+                },
+                true
+            );
 
-                testQuery(
-                    'grades',
-                    {
-                        [Op.not]: {
-                            [Op.all]: [11, 15, 12, 19]
-                        }
-                    },
-                    {
-                        dataSource: {
-                            grades: 5
-                        }
-                    },
-                    true
-                );
+            testQuery(
+                'grades',
+                {
+                    [Op.not]: {
+                        [Op.all]: [11, 15, 12, 19]
+                    }
+                },
+                {
+                    dataSource: {
+                        grades: 5
+                    }
+                },
+                true
+            );
 
-                testQuery(
-                    'level',
-                    {
-                        [Op.notIn]: {
-                            [Op.all]: [10, 16, 12, 18]
-                        }
-                    },
-                    {
-                        dataSource: {
-                            level: 2
-                        }
-                    },
-                    true
-                );
-            });
-
-            describe('Op.like', () => {
-                testQuery(
-                    'name',
-                    {
-                        [Op.like]: {
-                            [Op.any]: ['larry', 'mario']
-                        }
-                    },
-                    {
-                        dataSource: {
-                            name: 'mario'
-                        }
-                    },
-                    true
-                );
-
-                testQuery(
-                    'name',
-                    {
-                        [Op.notLike]: {
-                            [Op.any]: ['lucy', 'mario']
-                        }
-                    },
-                    {
-                        dataSource: {
-                            name: 'mach'
-                        }
-                    },
-                    true
-                );
-
-                testQuery(
-                    'name',
-                    {
-                        [Op.like]: {
-                            [Op.all]: ['rose', 'mario']
-                        }
-                    },
-                    {
-                        dataSource: {
-                            name: ['rose', 'mario']
-                        }
-                    },
-                    true
-                );
-
-                testQuery(
-                    'foods',
-                    {
-                        [Op.notLike]: {
-                            [Op.all]: ['corn', 'rice', 'BEEF']
-                        }
-                    },
-                    {
-                        dataSource: {
-                            cats: ['apple', 'peach'],
-                            foods: 'beef'
-                        }
-                    },
-                    true
-                );
-            });
+            testQuery(
+                'level',
+                {
+                    [Op.notIn]: {
+                        [Op.all]: [10, 16, 12, 18]
+                    }
+                },
+                {
+                    dataSource: {
+                        level: 2
+                    }
+                },
+                true
+            );
         });
     });
 
