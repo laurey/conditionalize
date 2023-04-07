@@ -48,7 +48,7 @@ const OperatorHelpers = {
         if (!aliases || _.isEmpty(aliases)) {
             this.OperatorsAliasMap = false;
         } else {
-            this.OperatorsAliasMap = Object.assign({}, aliases);
+            this.OperatorsAliasMap = { ...aliases };
         }
     },
 

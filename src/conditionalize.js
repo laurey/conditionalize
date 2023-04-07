@@ -2,9 +2,10 @@ import _ from 'lodash';
 
 import Op from './operators';
 import * as Utils from './utils';
-import { version } from '../package.json';
-import { extensions as Validator } from './validator-extras';
+import { logger } from './utils/logger';
 import OperatorHelpers from './operatorHelpers';
+import { extensions as Validator } from './validator-extras';
+import { version } from '../package.json';
 
 class Conditionalize {
     constructor(options) {
@@ -48,21 +49,27 @@ class Conditionalize {
         const binding = key === Op.or ? Op.or : Op.and;
 
         if (Array.isArray(value)) {
-            value = value.map(item => {
-                let itemQuery = this.whereItemsQuery(item, options, Op.and);
-                return itemQuery;
-            });
-            value = this.getValue(value, binding);
+            if (value.length > 0) {
+                const values = value.map(item => {
+                    let itemQuery = this.whereItemsQuery(item, options, Op.and);
+                    return itemQuery;
+                });
+                value = this.getValue(values, binding);
+            } else {
+                value = false;
+            }
         } else {
             value = this.whereItemsQuery(value, options, binding);
         }
 
+        // Op.or: [] should return false.
+        // Op.not of no restriction should also return false
         if ((key === Op.or || key === Op.not) && !value) {
             return false;
         }
 
         if (key === Op.not) {
-            return !value;
+            return !Boolean(value);
         }
 
         return value;
@@ -185,10 +192,10 @@ class Conditionalize {
     }
 
     _getLikeValue(key, value, prop, options) {
+        if (typeof key !== 'string' && !Array.isArray(key)) {
+            logger.warn(`Invalid type of key: ${key}. key should be string or array.`);
+        }
         const targetValue = _.get(options.dataSource, key);
-        // if (typeof targetValue !== 'string') {
-        //     throw new Error(`Invalid key value type: ${key}`);
-        // }
 
         let validatorType = this.OperatorMap[prop];
         if (prop === Op.is || prop === Op.not) {
@@ -211,8 +218,14 @@ class Conditionalize {
     }
 
     _joinKeyValue(key, value, prop, options) {
-        options = Object.assign({}, this.options, options);
         const targetValue = _.get(options.dataSource, key);
+        if (typeof key !== 'string' && !Array.isArray(key)) {
+            logger.warn(
+                `Expect typeof key to be string or array, but got: "${typeof key}". options: ${logger.inspect(
+                    options
+                )} `
+            );
+        }
 
         switch (prop) {
             case Op.ne:
@@ -233,8 +246,6 @@ class Conditionalize {
             case Op.is:
             case Op.like:
                 return this._getLikeValue(key, value, Op.is, options);
-            // case Op.isDate:
-            //     return this._getLikeValue(key, value, Op.isDate, options);
             case Op.not:
             case Op.notLike:
                 return this._getLikeValue(key, value, Op.not, options);
@@ -250,7 +261,7 @@ class Conditionalize {
             case Op.endsWith:
                 return _.endsWith(targetValue, value);
             case Op.substring:
-                return _.includes(targetValue, value);
+                return typeof targetValue === 'string' && _.includes(targetValue, value);
             case Op.any:
             case Op.all:
                 if (prop === Op.any) {
@@ -266,8 +277,6 @@ class Conditionalize {
                 return _.every(value, item => {
                     return _.isEqual(targetValue, item);
                 });
-            // default:
-            //     return this._getLikeValue(key, value, prop, options);
         }
 
         return false;
@@ -329,7 +338,6 @@ class Conditionalize {
             }
 
             if (value[Op.all]) {
-                // escapeOptions.isList = true;
                 if (_.isPlainObject(value)) {
                     value = Utils.getComplexKeys(value).map(propInValue => {
                         const values = value[propInValue];
@@ -404,7 +412,7 @@ class Conditionalize {
         }
 
         if (typeof where === 'string') {
-            return Boolean(where);
+            return Boolean(parseInt(where, 10)) === true;
         }
 
         const items = [];
@@ -444,8 +452,8 @@ class Conditionalize {
         }
 
         if (!value) {
-            const opValue = this.escape(value);
-            return this.joinKeyValue(key, opValue, Op.eq, options);
+            // const opValue = this.escape(value);
+            return this.joinKeyValue(key, value, Op.eq, options);
         }
 
         // Convert where: [] to Op.and if possible, else treat as literal/replacements
@@ -485,8 +493,8 @@ class Conditionalize {
             return this._whereParseSingleValueObject(key, Op.eq, value, options);
         }
 
-        const opValue = this.escape(value);
-        return this.joinKeyValue(key, opValue, Op.eq, options);
+        // const opValue = this.escape(value);
+        return this.joinKeyValue(key, value, Op.eq, options);
     }
 
     escape(value) {
