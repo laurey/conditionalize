@@ -1,4 +1,5 @@
 import util from 'util';
+
 import Conditionalize from '../src/conditionalize';
 
 const { Op } = Conditionalize;
@@ -96,4 +97,268 @@ describe('Conditionalize.prototype/Conditionalize', () => {
     //     expect(Conditionalize.prototype).toHaveProperty('Validator.not');
     //     expect(typeof Conditionalize.prototype.Validator.is).toBe('function');
     // });
+});
+
+describe('check method', () => {
+    const applyTest = function (where, params, expectation, ignore = false) {
+        const options = { ...params };
+        if (ignore !== true) {
+            Object.assign(options, { where });
+        }
+
+        it(
+            util.inspect(typeof where === 'object' && where ? where : { where }, { depth: 5 }) +
+                ((options && `, ${util.inspect(options, { depth: 5 })}`) || ''),
+            () => {
+                const ins = new Conditionalize(options);
+                return expect(ins.check()).toBe(expectation);
+            }
+        );
+    };
+
+    describe('literal NUMBER type', () => {
+        const options = {
+            dataSource: {
+                id: 1,
+                rank: 22
+            }
+        };
+
+        // dataSource.id == 1
+        applyTest(1, options, true);
+    });
+
+    describe('literal STRING type', () => {
+        const options = {
+            dataSource: {
+                id: 2,
+                rank: 22
+            }
+        };
+
+        // dataSource.id === '2'
+        applyTest('2', options, false);
+        // dataSource.id === 'false'
+        applyTest('false', options, false);
+    });
+
+    describe('literal BOOLEAN type', () => {
+        const options = {
+            dataSource: {
+                id: 3,
+                value: true,
+                rank: 22
+            }
+        };
+
+        // true === true
+        applyTest(true, options, true);
+        // true === false
+        applyTest(false, options, false);
+    });
+
+    describe('literal null/undefined type', () => {
+        const options = {
+            dataSource: {
+                id: 5,
+                rank: 26
+            }
+        };
+
+        applyTest(null, options, true);
+        applyTest(undefined, options, true);
+    });
+
+    describe('no where property', () => {
+        const options = {
+            dataSource: {
+                id: 9,
+                rank: 21
+            }
+        };
+
+        applyTest({}, options, true, true);
+        applyTest(0, options, true, true);
+        applyTest(null, options, true, true);
+        applyTest(
+            {
+                id: 10
+            },
+            options,
+            true,
+            true
+        );
+    });
+
+    describe('no where arguments (plain Object/empty Array)', () => {
+        const options = {
+            dataSource: {
+                id: 8,
+                rank: 33
+            }
+        };
+
+        applyTest({}, options, true);
+        applyTest([], options, true);
+    });
+
+    describe('primitive types where arguments within array', () => {
+        const options = {
+            dataSource: {
+                id: 8,
+                rank: 33
+            }
+        };
+
+        applyTest([''], options, true);
+        applyTest(['1'], options, true);
+        applyTest([1], options, true);
+        applyTest([1, 0], options, true);
+        applyTest([0], options, true);
+        applyTest([null], options, true);
+        applyTest([undefined], options, true);
+    });
+
+    describe('basic object/array where', () => {
+        const options = {
+            dataSource: {
+                id: 7,
+                rank: 12
+            }
+        };
+
+        applyTest(
+            {
+                rank: 12
+            },
+            options,
+            true
+        );
+        applyTest(
+            [
+                {
+                    rank: 12
+                }
+            ],
+            options,
+            true
+        );
+    });
+
+    describe('multiple where arguments', () => {
+        const options = {
+            dataSource: {
+                id: 8,
+                authorId: 22
+            }
+        };
+
+        applyTest(
+            {
+                // (authorId === 12 and status === 'active')
+                authorId: 12,
+                status: 'active'
+            },
+            options,
+            false
+        );
+        applyTest(
+            {
+                // (authorId === 12 and status === 'active')
+                authorId: 12,
+                status: 'active'
+            },
+            Object.assign({}, options, {
+                dataSource: {
+                    ...options.dataSource,
+                    authorId: 12,
+                    status: 'active'
+                }
+            }),
+            true
+        );
+
+        applyTest(
+            {
+                // (authorId !== 2)
+                authorId: { [Op.ne]: 2 }
+            },
+            options,
+            true
+        );
+    });
+
+    describe('use Op.or in where arguments', () => {
+        const options = {
+            dataSource: {
+                id: 15
+            }
+        };
+
+        applyTest(
+            {
+                [Op.or]: [{ id: [1, 2, 3] }, { id: { [Op.gt]: 10 } }]
+            },
+            options,
+            true
+        );
+    });
+
+    describe('use Op.and in where arguments', () => {
+        applyTest(
+            {
+                grade: 3
+            },
+            {
+                dataSource: {
+                    id: 11,
+                    grade: 3
+                }
+            },
+            true
+        );
+
+        applyTest(
+            {
+                [Op.and]: [{ id: 12 }, { grade: 33 }]
+            },
+            {
+                dataSource: {
+                    id: 12,
+                    grade: 11
+                }
+            },
+            false
+        );
+
+        applyTest(
+            {
+                id: 15,
+                name: 'james'
+            },
+            {
+                dataSource: {
+                    id: 15,
+                    name: 'james'
+                }
+            },
+            true
+        );
+
+        applyTest(
+            {
+                [Op.and]: {
+                    id: 16,
+                    name: 'anna'
+                }
+            },
+            {
+                dataSource: {
+                    id: 16,
+                    name: 'anna'
+                }
+            },
+            true
+        );
+    });
 });
