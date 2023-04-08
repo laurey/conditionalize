@@ -966,10 +966,50 @@ describe('Operator symbols', () => {
     describe('Op.all', () => {
         testQuery(
             {
+                text: { [Op.all]: 'hello world!' }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    text: 'hello world!'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                text: { [Op.all]: ['hello world!'] }
+            },
+            {
+                dataSource: {
+                    id: 2,
+                    text: 'hello world!'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                text: { [Op.all]: 'hello world!' }
+            },
+            {
+                dataSource: {
+                    id: 3,
+                    text: ['hello world!']
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
                 name: { [Op.all]: ['jim', 'may'] }
             },
             {
                 dataSource: {
+                    id: 4,
                     name: ['jim', 'may']
                 }
             },
@@ -982,6 +1022,7 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 5,
                     userId: [1, 10]
                 }
             },
@@ -1185,6 +1226,34 @@ describe('Operators Combinations', () => {
                 name: 'leo',
                 status: 'active',
                 authorId: 11
+            }
+        },
+        true
+    );
+
+    testQuery(
+        { stars: { [Op.gt]: 11 }, name: { [Op.like]: 'evo' } },
+        {
+            dataSource: {
+                id: 2,
+                stars: 100,
+                name: 'Thomas Devon',
+                status: 'active',
+                followers: 11
+            }
+        },
+        true
+    );
+
+    testQuery(
+        { [Op.or]: [{ stars: 50 }, { status: 'inactive' }] },
+        {
+            dataSource: {
+                id: 3,
+                stars: 99,
+                name: 'Sam',
+                status: 'inactive',
+                followers: 11
             }
         },
         true

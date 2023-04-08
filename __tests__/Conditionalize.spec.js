@@ -107,7 +107,7 @@ describe('check method', () => {
         }
 
         it(
-            util.inspect(typeof where === 'object' ? where : { where }, { depth: 5 }) +
+            util.inspect(typeof where === 'object' && where ? where : { where }, { depth: 5 }) +
                 ((options && `, ${util.inspect(options, { depth: 5 })}`) || ''),
             () => {
                 const ins = new Conditionalize(options);
@@ -160,8 +160,8 @@ describe('check method', () => {
     describe('literal null/undefined type', () => {
         const options = {
             dataSource: {
-                id: 4,
-                rank: 22
+                id: 5,
+                rank: 26
             }
         };
 
@@ -172,18 +172,28 @@ describe('check method', () => {
     describe('no where property', () => {
         const options = {
             dataSource: {
-                id: 4,
-                rank: 22
+                id: 9,
+                rank: 21
             }
         };
 
         applyTest({}, options, true, true);
+        applyTest(0, options, true, true);
+        applyTest(null, options, true, true);
+        applyTest(
+            {
+                id: 10
+            },
+            options,
+            true,
+            true
+        );
     });
 
-    describe('no where arguments (plain object/empty array)', () => {
+    describe('no where arguments (plain Object/empty Array)', () => {
         const options = {
             dataSource: {
-                id: 15,
+                id: 8,
                 rank: 33
             }
         };
@@ -192,7 +202,24 @@ describe('check method', () => {
         applyTest([], options, true);
     });
 
-    describe('basic object where', () => {
+    describe('primitive types where arguments within array', () => {
+        const options = {
+            dataSource: {
+                id: 8,
+                rank: 33
+            }
+        };
+
+        applyTest([''], options, true);
+        applyTest(['1'], options, true);
+        applyTest([1], options, true);
+        applyTest([1, 0], options, true);
+        applyTest([0], options, true);
+        applyTest([null], options, true);
+        applyTest([undefined], options, true);
+    });
+
+    describe('basic object/array where', () => {
         const options = {
             dataSource: {
                 id: 7,
@@ -204,6 +231,15 @@ describe('check method', () => {
             {
                 rank: 12
             },
+            options,
+            true
+        );
+        applyTest(
+            [
+                {
+                    rank: 12
+                }
+            ],
             options,
             true
         );
@@ -219,7 +255,7 @@ describe('check method', () => {
 
         applyTest(
             {
-                // if (authorId === 12 and status === 'active')  get true, else false
+                // (authorId === 12 and status === 'active')
                 authorId: 12,
                 status: 'active'
             },
@@ -228,7 +264,7 @@ describe('check method', () => {
         );
         applyTest(
             {
-                // if (authorId === 12 and status === 'active')  get true, else false
+                // (authorId === 12 and status === 'active')
                 authorId: 12,
                 status: 'active'
             },
@@ -244,7 +280,7 @@ describe('check method', () => {
 
         applyTest(
             {
-                // if (authorId !== 2)  get true, else false
+                // (authorId !== 2)
                 authorId: { [Op.ne]: 2 }
             },
             options,
@@ -268,122 +304,60 @@ describe('check method', () => {
         );
     });
 
-    describe('use Op.any in where arguments', () => {
-        let options = {
-            dataSource: {
+    describe('use Op.and in where arguments', () => {
+        applyTest(
+            {
                 grade: 3
-            }
-        };
-        applyTest(
+            },
             {
-                grade: {
-                    [Op.any]: [3, 5, 10, 15, 20]
+                dataSource: {
+                    id: 11,
+                    grade: 3
                 }
             },
-            options,
             true
         );
 
-        options = {
-            dataSource: {
-                grade: 13
-            }
-        };
         applyTest(
             {
-                grade: {
-                    [Op.gt]: {
-                        [Op.any]: [5, 13, 15, 20]
-                    }
+                [Op.and]: [{ id: 12 }, { grade: 33 }]
+            },
+            {
+                dataSource: {
+                    id: 12,
+                    grade: 11
                 }
             },
-            options,
-            true
+            false
         );
 
-        options = {
-            dataSource: {
+        applyTest(
+            {
+                id: 15,
                 name: 'james'
-            }
-        };
-        applyTest(
+            },
             {
-                name: {
-                    [Op.like]: {
-                        [Op.any]: ['david', 'smith', 'jame']
-                    }
+                dataSource: {
+                    id: 15,
+                    name: 'james'
                 }
             },
-            options,
             true
         );
 
-        options = {
-            dataSource: {
-                name: 'anna'
-            }
-        };
         applyTest(
             {
-                name: {
-                    [Op.notLike]: {
-                        [Op.any]: ['anny', 'tom', 'jimmy']
-                    }
+                [Op.and]: {
+                    id: 16,
+                    name: 'anna'
                 }
             },
-            options,
-            true
-        );
-    });
-
-    describe('use Op.all in where arguments', () => {
-        let options = {
-            dataSource: {
-                grade: 5
-            }
-        };
-        applyTest(
             {
-                grade: {
-                    [Op.all]: [5, 5, 5]
+                dataSource: {
+                    id: 16,
+                    name: 'anna'
                 }
             },
-            options,
-            true
-        );
-
-        options = {
-            dataSource: {
-                grade: 7
-            }
-        };
-
-        applyTest(
-            {
-                grade: {
-                    [Op.lte]: {
-                        [Op.all]: [9, 10, 15, 20]
-                    }
-                }
-            },
-            options,
-            true
-        );
-
-        options = {
-            dataSource: {
-                name: 'anna'
-            }
-        };
-        applyTest(
-            {
-                name: {
-                    [Op.notLike]: {
-                        [Op.all]: ['anny', 'tommy', 'jane']
-                    }
-                }
-            },
-            options,
             true
         );
     });

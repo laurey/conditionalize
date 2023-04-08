@@ -257,26 +257,52 @@ class Conditionalize {
             // case Op.notBetween:
             //     return !this._getBetweenValue(value, targetValue);
             case Op.startsWith:
-                return _.startsWith(targetValue, value);
+                return typeof targetValue === 'string' && typeof value === 'string' && _.startsWith(targetValue, value);
             case Op.endsWith:
-                return _.endsWith(targetValue, value);
+                return typeof targetValue === 'string' && typeof value === 'string' && _.endsWith(targetValue, value);
             case Op.substring:
-                return typeof targetValue === 'string' && _.includes(targetValue, value);
+                return typeof targetValue === 'string' && typeof value === 'string' && _.includes(targetValue, value);
             case Op.any:
             case Op.all:
                 if (prop === Op.any) {
-                    return _.some(value, item => {
-                        return _.isEqual(targetValue, item);
-                    });
+                    if (Array.isArray(targetValue)) {
+                        if (Array.isArray(value)) {
+                            return _.isEqual(targetValue, value);
+                        }
+
+                        return _.some(targetValue, item => {
+                            return _.isEqual(item, value);
+                        });
+                    }
+
+                    if (!Array.isArray(targetValue)) {
+                        if (Array.isArray(value)) {
+                            return _.some(value, item => {
+                                return _.isEqual(targetValue, item);
+                            });
+                        }
+                        return _.isEqual(targetValue, value);
+                    }
                 }
 
                 if (Array.isArray(targetValue)) {
-                    return _.isEqual(targetValue, value);
+                    if (Array.isArray(value)) {
+                        return _.isEqual(targetValue, value);
+                    }
+
+                    return _.every(targetValue, item => {
+                        return _.isEqual(item, value);
+                    });
                 }
 
-                return _.every(value, item => {
-                    return _.isEqual(targetValue, item);
-                });
+                if (!Array.isArray(targetValue)) {
+                    if (Array.isArray(value)) {
+                        return _.every(value, item => {
+                            return _.isEqual(targetValue, item);
+                        });
+                    }
+                    return _.isEqual(targetValue, value);
+                }
         }
 
         return false;
@@ -382,7 +408,7 @@ class Conditionalize {
         }
 
         if (Array.isArray(smth)) {
-            if (smth.length === 0 || (smth.length > 0 && smth[0].length === 0)) {
+            if (smth.length === 0 || (smth.length > 0 && smth[0]?.length === 0)) {
                 return true;
             }
 
