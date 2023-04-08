@@ -1,9 +1,9 @@
 const config = api => {
+    const isBrowser = api.env('browser');
     const isTest = api.env('test');
     const isCJS = api.env('cjs');
-    const isEnvES = api.env('es');
-    const isBrowser = api.env('browser');
-    const env = api.cache(() => process.env.NODE_ENV); // test/development/production
+    // const isEnvES = api.env('es');
+    // const env = api.cache(() => process.env.NODE_ENV); // test/development/production
 
     return {
         plugins: [
@@ -32,7 +32,7 @@ const config = api => {
                               ios: 10,
                               ie: 10
                           }
-                        : { node: '12' }
+                        : { node: 'current' }
                 }
             ]
         ]

@@ -69,7 +69,7 @@ class Conditionalize {
         }
 
         if (key === Op.not) {
-            return !Boolean(value);
+            return !value;
         }
 
         return value;
@@ -220,11 +220,9 @@ class Conditionalize {
     _joinKeyValue(key, value, prop, options) {
         const targetValue = _.get(options.dataSource, key);
         if (typeof key !== 'string' && !Array.isArray(key)) {
-            logger.warn(
-                `Expect typeof key to be string or array, but got: "${typeof key}". options: ${logger.inspect(
-                    options
-                )} `
-            );
+            const msg = `Expect typeof key to be string or array, but got: "${typeof key}".`;
+            logger.warn(msg);
+            throw new Error(msg);
         }
 
         switch (prop) {
@@ -392,7 +390,7 @@ class Conditionalize {
             return this.whereItemsQuery(smth, options);
         }
 
-        if (typeof smth === 'number' || typeof smth === 'string') {
+        if (typeof smth === 'number') {
             let primaryKeys = factory ? Object.keys(factory.primaryKeys) : [];
 
             if (primaryKeys.length > 0) {
@@ -405,6 +403,10 @@ class Conditionalize {
             where[primaryKeys] = smth;
 
             return this.whereItemsQuery(where, options);
+        }
+
+        if (typeof smth === 'string') {
+            return this.whereItemsQuery(smth, options);
         }
 
         if (Array.isArray(smth)) {
@@ -424,12 +426,7 @@ class Conditionalize {
             return this.whereItemsQuery(smth, options);
         }
 
-        return smth === true;
-    }
-
-    whereQuery(where, options) {
-        const result = this.whereItemsQuery(where, options);
-        return result;
+        return true;
     }
 
     whereItemsQuery(where, options, prop) {
@@ -438,7 +435,7 @@ class Conditionalize {
         }
 
         if (typeof where === 'string') {
-            return Boolean(parseInt(where, 10)) === true;
+            throw new Error("Not support for `{where: 'raw query'}`.");
         }
 
         const items = [];
