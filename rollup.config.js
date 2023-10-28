@@ -11,7 +11,7 @@ import pkg from './package.json';
 
 const outputFileName = 'conditionalize';
 const name = 'Conditionalize';
-const defaultInput = path.resolve(__dirname, 'src/conditionalize.js');
+const defaultInput = path.resolve(__dirname, 'src/conditionalize');
 
 const buildConfig = ({ browser = false, minifiedVersion = false, output, ...config }) => {
     const getOutputFile = (item, minified) => {
@@ -28,12 +28,12 @@ const buildConfig = ({ browser = false, minifiedVersion = false, output, ...conf
         ...config,
         output,
         plugins: [
-            autoExternal(),
+            autoExternal({
+                dependencies: false
+            }),
             json({ preferConst: true, compact: true }),
             resolve({ browser }),
-            commonjs({
-                // include: 'node_modules/**'
-            }),
+            commonjs(),
             minified && terser(),
             minified && bundleSize(),
             ...(config.plugins || [])
@@ -105,7 +105,7 @@ const buildUMDConfig = ({ name, banner, input }) => {
         input,
         browser: true,
         minifiedVersion: true,
-        external: [/@babel\/runtime/],
+        // external: [/@babel\/runtime/],
         output: [
             {
                 name,
@@ -134,8 +134,8 @@ const buildUMDConfig = ({ name, banner, input }) => {
         ],
         plugins: [
             babel({
-                exclude: 'node_modules/**',
-                presets: ['@babel/preset-env'],
+                exclude: ['node_modules/**'],
+                // presets: ['@babel/preset-env'],
                 babelHelpers: 'bundled',
                 configFile: path.resolve(__dirname, 'babel.config.cjs')
             })
@@ -143,7 +143,7 @@ const buildUMDConfig = ({ name, banner, input }) => {
     });
 };
 
-const buildAMDConfig = () => {};
+// const buildAMDConfig = () => {};
 
 export default async args => {
     const input = args?.entry ?? defaultInput;
@@ -155,20 +155,16 @@ export default async args => {
         case 'es':
         case 'esm':
             return buildESMConfig({ name, input, banner });
-            break;
 
         case 'umd':
         case 'browser':
             return buildUMDConfig({ name, input, banner });
-            break;
 
         case 'cjs':
         case 'commonjs':
             return buildCJSConfig({ name, input, banner });
-            break;
 
         default:
             return buildESMConfig({ name, input, banner });
-            break;
     }
 };

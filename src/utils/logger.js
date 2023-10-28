@@ -3,8 +3,8 @@
  *
  */
 
-import nodeDebug from 'debug';
-import util from 'util';
+import debug from 'debug';
+// import util from 'util';
 
 export class Logger {
     constructor({ context = 'conditionalize', ...rest } = {}) {
@@ -23,28 +23,26 @@ export class Logger {
         console.warn(`(${this.config.context}) Warning: ${message}`);
     }
 
-    /**
-     * Uses node's util.inspect to stringify a value.
-     *
-     * @param value The value which should be inspected.
-     * @returns The string of the inspected value.
-     */
-    inspect(value, options) {
-        return util.inspect(value, {
-            showHidden: false,
-            depth: 2,
-            ...options
-        });
-    }
+    // /**
+    //  * Uses util.inspect to stringify a value.
+    //  *
+    //  * @param value The value which should be inspected.
+    //  */
+    // inspect(value, options) {
+    //     return util.inspect(value, {
+    //         showHidden: false,
+    //         depth: 2,
+    //         ...options
+    //     });
+    // }
 
     /**
      * Gets a debugger for a context.
      *
      * @param name The name of the context.
-     * @returns A debugger interace which can be used to debug.
      */
     debugCtx(name) {
-        return nodeDebug(`${this.config.context}:${name}`);
+        return debug(`${this.config.context}:${name}`);
     }
 }
 

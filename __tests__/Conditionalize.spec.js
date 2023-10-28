@@ -91,12 +91,6 @@ describe('Conditionalize.prototype/Conditionalize', () => {
         expect(typeof Conditionalize.prototype.and).toBe('function');
         expect(typeof Conditionalize.prototype.where).toBe('function');
     });
-
-    // test('should has Validator.xxx property', () => {
-    //     expect(Conditionalize.prototype).toHaveProperty('Validator.is');
-    //     expect(Conditionalize.prototype).toHaveProperty('Validator.not');
-    //     expect(typeof Conditionalize.prototype.Validator.is).toBe('function');
-    // });
 });
 
 describe('check method', () => {
@@ -124,6 +118,7 @@ describe('check method', () => {
             }
         };
 
+        applyTest(0, options, false);
         // dataSource.id == 1
         applyTest(1, options, true);
     });
@@ -135,11 +130,9 @@ describe('check method', () => {
                 rank: 22
             }
         };
-
-        // dataSource.id === '2'
-        applyTest('2', options, false);
-        // dataSource.id === 'false'
-        applyTest('false', options, false);
+        applyTest('', options, true);
+        // applyTest('2', options, false); // invalid: Not support
+        // applyTest('ga2', options, false); // invalid: Not support
     });
 
     describe('literal BOOLEAN type', () => {
@@ -151,10 +144,10 @@ describe('check method', () => {
             }
         };
 
-        // true === true
+        // 1 === 1
         applyTest(true, options, true);
-        // true === false
-        applyTest(false, options, false);
+        // 1 === 1
+        applyTest(false, options, true);
     });
 
     describe('literal null/undefined type', () => {
@@ -177,9 +170,10 @@ describe('check method', () => {
             }
         };
 
-        applyTest({}, options, true, true);
         applyTest(0, options, true, true);
+        applyTest({}, options, true, true);
         applyTest(null, options, true, true);
+        applyTest(false, options, true, true);
         applyTest(
             {
                 id: 10

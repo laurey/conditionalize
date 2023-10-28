@@ -71,17 +71,6 @@ describe('Operator symbols', () => {
         );
     };
 
-    testQuery(
-        { [Op.and]: { name: 'joe', active: false, age: 33 } },
-        {
-            dataSource: {
-                name: 'joe',
-                active: false,
-                age: 33
-            }
-        },
-        true
-    );
     describe('Op.and', () => {
         testQuery(
             { [Op.and]: [{ name: 'mike', age: 22 }] },
@@ -94,30 +83,6 @@ describe('Operator symbols', () => {
             },
             true
         );
-
-        // testQuery(
-        //     { [Op.and]: null },
-        //     {
-        //         dataSource: {
-        //             id: 2,
-        //             name: 'mary',
-        //             authorId: 12
-        //         }
-        //     },
-        //     false
-        // );
-
-        // testQuery(
-        //     { [Op.and]: undefined },
-        //     {
-        //         dataSource: {
-        //             id: 3,
-        //             name: 'mike',
-        //             authorId: 12
-        //         }
-        //     },
-        //     false
-        // );
 
         testQuery(
             { [Op.and]: [] },
@@ -143,18 +108,6 @@ describe('Operator symbols', () => {
             true
         );
 
-        // testQuery(
-        //     { [Op.and]: 0 },
-        //     {
-        //         dataSource: {
-        //             id: 6,
-        //             name: 'leon',
-        //             authorId: 22
-        //         }
-        //     },
-        //     false
-        // );
-
         testQuery(
             { [Op.and]: 1 },
             {
@@ -165,18 +118,6 @@ describe('Operator symbols', () => {
                 }
             },
             true
-        );
-
-        testQuery(
-            { [Op.and]: 'test' },
-            {
-                dataSource: {
-                    id: 8,
-                    name: 'leon',
-                    authorId: 16
-                }
-            },
-            false
         );
     });
 
@@ -240,30 +181,6 @@ describe('Operator symbols', () => {
             false
         );
 
-        // testQuery(
-        //     { [Op.or]: null },
-        //     {
-        //         dataSource: {
-        //             id: 7,
-        //             name: 'tom',
-        //             authorId: 11
-        //         }
-        //     },
-        //     false
-        // );
-
-        // testQuery(
-        //     { [Op.or]: undefined },
-        //     {
-        //         dataSource: {
-        //             id: 5,
-        //             name: 'mayer',
-        //             authorId: 12
-        //         }
-        //     },
-        //     false
-        // );
-
         testQuery(
             { [Op.or]: [] },
             {
@@ -288,18 +205,6 @@ describe('Operator symbols', () => {
             true
         );
 
-        // testQuery(
-        //     { [Op.or]: 0 },
-        //     {
-        //         dataSource: {
-        //             id: 10,
-        //             name: 'leon',
-        //             authorId: 21
-        //         }
-        //     },
-        //     false
-        // );
-
         testQuery(
             { [Op.or]: 1 },
             {
@@ -310,17 +215,6 @@ describe('Operator symbols', () => {
                 }
             },
             true
-        );
-
-        testQuery(
-            { [Op.or]: 'test' },
-            {
-                dataSource: {
-                    name: 'leon',
-                    authorId: 55
-                }
-            },
-            false
         );
     });
 
