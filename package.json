@@ -34,9 +34,6 @@
     "version": "npm run build",
     "watch": "rollup -c -w"
   },
-  "dependencies": {
-    "debug": "^4.3.4"
-  },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
     "@babel/core": "^7.16.0",
@@ -63,6 +60,7 @@
     "@rollup/plugin-node-resolve": "^10.0.0",
     "babel-plugin-add-module-exports": "^1.0.4",
     "cross-env": "^7.0.3",
+    "debug": "^4.3.4",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-import": "^2.27.5",
