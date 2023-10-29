@@ -130,6 +130,7 @@ class Conditionalize {
             } else if (isLocalizedValidator || validatorType === 'isIP') {
                 validatorArgs = [];
             } else {
+                // @TODO: may support transform SQL Query LIKE condition text (exp: 'see%') to RegexpExp (/^see/)
                 validatorArgs = [validatorArgs];
             }
         } else {
@@ -145,7 +146,9 @@ class Conditionalize {
 
         let comparator = this.OperatorMap[prop] || this.OperatorMap[Op.eq];
         if (comparator === undefined) {
-            throw new Error(`${key} and ${value} has no comparison operator`);
+            const msg = `${key} and ${value} has no comparison operator`;
+            process.env.NODE_ENV !== 'production' && logger.warn(msg);
+            throw new Error(msg);
         }
 
         return this._joinKeyValue(key, value, prop, options);
@@ -193,7 +196,9 @@ class Conditionalize {
 
     _getLikeValue(key, value, prop, options) {
         if (typeof key !== 'string' && !Array.isArray(key)) {
-            logger.warn(`Invalid type of key: ${key}. key should be string or array.`);
+            const msg = `Invalid type of key: ${key}. key should be string or array.`;
+            process.env.NODE_ENV !== 'production' && logger.warn(msg);
+            throw new Error(msg);
         }
         const targetValue = _.get(options.dataSource, key);
 
@@ -203,7 +208,9 @@ class Conditionalize {
         }
 
         if (typeof Validator[validatorType] !== 'function') {
-            throw new Error(`Invalid validator function: ${validatorType}`);
+            const msg = `Invalid validator function: ${validatorType}`;
+            process.env.NODE_ENV !== 'production' && logger.warn(msg);
+            throw new Error(msg);
         }
 
         const validatorArgs = this._extractValidatorArgs(
@@ -221,7 +228,7 @@ class Conditionalize {
         const targetValue = _.get(options.dataSource, key);
         if (typeof key !== 'string' && !Array.isArray(key)) {
             const msg = `Expect typeof key to be string or array, but got: "${typeof key}".`;
-            logger.warn(msg);
+            process.env.NODE_ENV !== 'production' && logger.warn(msg);
             throw new Error(msg);
         }
 
@@ -435,7 +442,9 @@ class Conditionalize {
         }
 
         if (typeof where === 'string') {
-            throw new Error("Not support for `{where: 'raw query'}`.");
+            const msg = "Not support for `{where: 'raw query'}`.";
+            process.env.NODE_ENV !== 'production' && logger.warn(msg);
+            throw new Error(msg);
         }
 
         const items = [];
@@ -484,7 +493,9 @@ class Conditionalize {
             if (Utils.canTreatArrayAsAnd(value)) {
                 key = Op.and;
             } else {
-                throw new Error('Literal replacements in the `where` object is not supported.');
+                const msg = 'Literal replacements in the `where` object is not supported.';
+                process.env.NODE_ENV !== 'production' && logger.warn(msg);
+                throw new Error(msg);
             }
         }
 

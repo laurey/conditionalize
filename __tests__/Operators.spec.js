@@ -353,45 +353,37 @@ describe('Operator symbols', () => {
             true
         );
 
-        // //
-        // // PASS FAILED
-        // testQuery(
-        //     {
-        //         name: {
-        //             [Op.like]: [
-        //                 {
-        //                     [Op.any]: ['larry', 'mario']
-        //                 },
-        //                 'i'
-        //             ]
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             name: 'Mario'
-        //         }
-        //     },
-        //     true
-        // );
-        // SHOULD PASS
-        // testQuery(
-        //     {
-        //         name: {
-        //             [Op.like]: [
-        //                 {
-        //                     [Op.any]: ['1122', '2233']
-        //                 },
-        //                 'i'
-        //             ]
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             name: '22'
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            {
+                name: {
+                    [Op.like]: {
+                        [Op.any]: ['larry', 'mairio']
+                    }
+                }
+            },
+            {
+                dataSource: {
+                    name: 'Mario'
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                name: {
+                    [Op.like]: {
+                        [Op.any]: ['a2', 'a2233']
+                    }
+                }
+            },
+            {
+                dataSource: {
+                    name: 'a22'
+                }
+            },
+            true
+        );
     });
 
     describe('Op.notLike', () => {
@@ -480,79 +472,63 @@ describe('Operator symbols', () => {
             },
             true
         );
-        // testQuery(
-        //     { name: { [Op.eq]: { [Op.col]: 'alias' } } },
-        //     {
-        //         dataSource: {
-        //             name: ['JS', 'CSS'],
-        //             alias: ['JS', 'CSS']
-        //         }
-        //     },
-        //     true
-        // );
-        // testQuery(
-        //     { count: { [Op.like]: { [Op.col]: 'total' } } },
-        //     {
-        //         dataSource: {
-        //             count: 233,
-        //             total: 33
-        //         }
-        //     },
-        //     true
-        // );
-        // testQuery(
-        //     { name: { [Op.like]: { [Op.col]: 'alias' } } },
-        //     {
-        //         dataSource: {
-        //             name: 'sass',
-        //             alias: 'ss'
-        //         }
-        //     },
-        //     true
-        // );
-        // testQuery(
-        //     { age: { [Op.gt]: { [Op.col]: 'demo.ageAlias' } } },
-        //     {
-        //         dataSource: {
-        //             age: 23,
-        //             name: 'javas',
-        //             demo: { ageAlias: 11 },
-        //             alias: 'js'
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            { name: { [Op.eq]: { [Op.col]: 'alias' } } },
+            {
+                dataSource: {
+                    name: ['JS', 'CSS'],
+                    alias: ['JS', 'CSS']
+                }
+            },
+            true
+        );
+        testQuery(
+            { count: { [Op.like]: { [Op.col]: 'total' } } },
+            {
+                dataSource: {
+                    count: '23aag',
+                    total: '3a'
+                }
+            },
+            true
+        );
+        testQuery(
+            { name: { [Op.like]: { [Op.col]: 'alias' } } },
+            {
+                dataSource: {
+                    name: 'sass',
+                    alias: 'ss'
+                }
+            },
+            true
+        );
+        testQuery(
+            { age: { [Op.gt]: { [Op.col]: 'demo.ageAlias' } } },
+            {
+                dataSource: {
+                    age: 23,
+                    name: 'javas',
+                    demo: { ageAlias: 11 },
+                    alias: 'js'
+                }
+            },
+            true
+        );
 
-        // SHOULD FAILED
-        // testQuery(
-        //     {
-        //         alias: {
-        //             // [Op.like]: '234'
-        //             [Op.like]: 'NANA'
-        //             // [Op.like]: ['ban', 'i']
-        //             // [Op.like]: {
-        //             //     [Op.any]: { [Op.col]: 'name' }
-        //             // }
-        //             // [Op.like]: [
-        //             //     {
-        //             //         [Op.col]: 'name'
-        //             //     },
-        //             //     'i'
-        //             // ]
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             // name: ['tulip', 'orchid1'],
-        //             // alias: ['tulip', 'orchid', 'sakura']
-        //             name: '112233',
-        //             alias: '112233',
-        //             name: 'banana',
-        //             alias: 'BANANA'
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            {
+                alias: {
+                    [Op.like]: 'NANA'
+                }
+            },
+            {
+                dataSource: {
+                    name: 'banana',
+                    alias: 'BANANA'
+                }
+            },
+            true
+        );
     });
 
     describe('Op.gt/Op.gte', () => {
@@ -582,21 +558,24 @@ describe('Operator symbols', () => {
             true
         );
 
-        // testQuery(
-        //     'count',
-        //     {
-        //         [Op.gt]: {
-        //             [Op.col]: 'total'
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             total: 11,
-        //             count: 33
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            'count',
+            {
+                where: {
+                    count: {
+                        [Op.gt]: {
+                            [Op.col]: 'total'
+                        }
+                    }
+                },
+                dataSource: {
+                    total: 11,
+                    count: 33
+                }
+            },
+            true,
+            true
+        );
     });
 
     describe('Op.lt/Op.lte', () => {
@@ -626,19 +605,22 @@ describe('Operator symbols', () => {
             true
         );
 
-        // testQuery(
-        //     'total',
-        //     {
-        //         [Op.lte]: { [Op.col]: 'count' }
-        //     },
-        //     {
-        //         dataSource: {
-        //             total: 2,
-        //             count: 10
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            'total',
+            {
+                where: {
+                    total: {
+                        [Op.lte]: { [Op.col]: 'count' }
+                    }
+                },
+                dataSource: {
+                    total: 2,
+                    count: 10
+                }
+            },
+            true,
+            true
+        );
     });
 
     describe('Op.in/Op.notIn', () => {
@@ -811,50 +793,41 @@ describe('Operator symbols', () => {
             true
         );
 
-        // testQuery(
-        //     'userId',
-        //     {
-        //         [Op.any]: {
-        //             [Op.values]: [11, 10, 15, 19]
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             userId: 11
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            'userId',
+            {
+                where: {
+                    userId: {
+                        [Op.any]: {
+                            [Op.values]: [11, 10, 15, 19]
+                        }
+                    }
+                },
+                dataSource: {
+                    userId: 11
+                }
+            },
+            true,
+            true
+        );
 
-        // testQuery(
-        //     'grades',
-        //     {
-        //         [Op.gt]: {
-        //             [Op.any]: [6, 10, 16, 19]
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             grades: 10
-        //         }
-        //     },
-        //     true
-        // );
-
-        // testQuery(
-        //     'grades',
-        //     {
-        //         [Op.notIn]: {
-        //             [Op.any]: [3, 13, 6, 15, 18]
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             grades: 6
-        //         }
-        //     },
-        //     false
-        // );
+        testQuery(
+            'grades',
+            {
+                where: {
+                    grades: {
+                        [Op.notIn]: {
+                            [Op.any]: [3, 13, 6, 15, 18]
+                        }
+                    }
+                },
+                dataSource: {
+                    grades: 6
+                }
+            },
+            false,
+            true
+        );
     });
 
     describe('Op.all', () => {
@@ -923,65 +896,77 @@ describe('Operator symbols', () => {
             true
         );
 
-        // testQuery(
-        //     'sales_by_season',
-        //     {
-        //         [Op.all]: {
-        //             [Op.values]: [11, 10]
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             sales_by_season: [11, 10]
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            'sales_by_season',
+            {
+                where: {
+                    sales_by_season: {
+                        [Op.all]: {
+                            [Op.values]: [11, 10]
+                        }
+                    }
+                },
+                dataSource: {
+                    sales_by_season: [11, 10]
+                }
+            },
+            true,
+            true
+        );
 
-        // testQuery(
-        //     'grades',
-        //     {
-        //         [Op.gt]: {
-        //             [Op.all]: [11, 10, 17, 19]
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             grades: 25
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            'grades',
+            {
+                where: {
+                    grades: {
+                        [Op.gt]: {
+                            [Op.all]: [11, 10, 17, 19]
+                        }
+                    }
+                },
+                dataSource: {
+                    grades: 25
+                }
+            },
+            true,
+            true
+        );
 
-        // testQuery(
-        //     'grades',
-        //     {
-        //         [Op.not]: {
-        //             [Op.all]: [11, 15, 12, 19]
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             grades: 5
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            'grades',
+            {
+                where: {
+                    grades: {
+                        [Op.not]: {
+                            [Op.all]: [11, 15, 12, 19]
+                        }
+                    }
+                },
+                dataSource: {
+                    grades: 5
+                }
+            },
+            true,
+            true
+        );
 
-        // testQuery(
-        //     'level',
-        //     {
-        //         [Op.notIn]: {
-        //             [Op.all]: [10, 16, 12, 18]
-        //         }
-        //     },
-        //     {
-        //         dataSource: {
-        //             level: 2
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            'level',
+            {
+                where: {
+                    level: {
+                        [Op.notIn]: {
+                            [Op.all]: [10, 16, 12, 18]
+                        }
+                    }
+                },
+                dataSource: {
+                    level: 2
+                }
+            },
+            true,
+            true
+        );
     });
 
     describe.skip('Op.between/Op.notBetween', () => {
