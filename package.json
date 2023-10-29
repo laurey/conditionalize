@@ -1,6 +1,6 @@
 {
   "name": "conditionalize",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "Luis",
   "license": "MIT",
   "main": "lib/conditionalize.js",
