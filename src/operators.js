@@ -23,6 +23,11 @@
  * @property and
  * @property any
  * @property all
+ * @property overlap
+ * @property contains
+ * @property contained
+ * @property between
+ * @property notBetween
  */
 const Op = {
     eq: Symbol.for('eq'),
@@ -47,9 +52,12 @@ const Op = {
     and: Symbol.for('and'),
     any: Symbol.for('any'),
     all: Symbol.for('all'),
-    col: Symbol.for('col')
-    // between: Symbol.for('between'),
-    // notBetween: Symbol.for('notBetween')
+    col: Symbol.for('col'),
+    overlap: Symbol.for('overlap'),
+    contains: Symbol.for('contains'),
+    contained: Symbol.for('contained'),
+    between: Symbol.for('between'),
+    notBetween: Symbol.for('notBetween')
     // custom operators
     // isDate: Symbol.for('isDate')
     // isIPv4: Symbol.for('isIPv4')

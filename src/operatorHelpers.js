@@ -28,9 +28,12 @@ const OperatorHelpers = {
         [Op.all]: 'ALL',
         [Op.and]: 'AND',
         [Op.any]: 'ANY',
-        [Op.col]: 'COL'
-        // [Op.between]: 'BETWEEN',
-        // [Op.notBetween]: 'NOT BETWEEN'
+        [Op.col]: 'COL',
+        [Op.overlap]: '&&',
+        [Op.contains]: '@>',
+        [Op.contained]: '<@',
+        [Op.between]: 'BETWEEN',
+        [Op.notBetween]: 'NOT BETWEEN'
         // custom
         // [Op.isDate]: 'isDate'
         // [Op.isIPv4]: 'isIPv4'

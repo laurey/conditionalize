@@ -224,6 +224,22 @@ class Conditionalize {
         return Boolean(result);
     }
 
+    _getContainsValue(value, other) {
+        if (Array.isArray(other)) {
+            return _.every(other, item => _.includes(value, item));
+        }
+
+        if (typeof other === 'object') {
+            const keys = _.keys(other);
+            if (keys.length === 0) {
+                return false;
+            }
+            return _.every(keys, key => _.has(value, key) && _.includes(value, other[key]));
+        }
+
+        return _.includes(value, other);
+    }
+
     _joinKeyValue(key, value, prop, options) {
         const targetValue = _.get(options.dataSource, key);
         if (typeof key !== 'string' && !Array.isArray(key)) {
@@ -257,56 +273,52 @@ class Conditionalize {
             case Op.in:
             case Op.notIn:
                 return prop === Op.in ? _.includes(value, targetValue) : !_.includes(value, targetValue);
-            // case Op.between:
-            //     return this._getBetweenValue(value, targetValue);
-            // case Op.notBetween:
-            //     return !this._getBetweenValue(value, targetValue);
             case Op.startsWith:
                 return typeof targetValue === 'string' && typeof value === 'string' && _.startsWith(targetValue, value);
             case Op.endsWith:
                 return typeof targetValue === 'string' && typeof value === 'string' && _.endsWith(targetValue, value);
             case Op.substring:
                 return typeof targetValue === 'string' && typeof value === 'string' && _.includes(targetValue, value);
-            case Op.any:
-            case Op.all:
-                if (prop === Op.any) {
-                    if (Array.isArray(targetValue)) {
-                        if (Array.isArray(value)) {
-                            return _.isEqual(targetValue, value);
-                        }
-
-                        return _.some(targetValue, item => {
-                            return _.isEqual(item, value);
-                        });
-                    }
-
-                    if (!Array.isArray(targetValue)) {
-                        if (Array.isArray(value)) {
-                            return _.some(value, item => {
-                                return _.isEqual(targetValue, item);
-                            });
-                        }
-                        return _.isEqual(targetValue, value);
-                    }
+            case Op.contains:
+            case Op.contained:
+                if (prop === Op.contains) {
+                    return this._getContainsValue(targetValue, value);
                 }
 
-                if (Array.isArray(targetValue)) {
-                    if (Array.isArray(value)) {
-                        return _.isEqual(targetValue, value);
-                    }
+                return this._getContainsValue(value, targetValue);
+            case Op.any:
+            case Op.all:
+            case Op.overlap:
+            case Op.between:
+            case Op.notBetween:
+                if (!Array.isArray(value)) {
+                    throw new Error(`The prop '${prop}' value should be array type.`);
+                }
 
-                    return _.every(targetValue, item => {
-                        return _.isEqual(item, value);
+                if (prop === Op.any) {
+                    return _.some(value, item => {
+                        return _.isEqual(targetValue, item);
                     });
                 }
 
-                if (!Array.isArray(targetValue)) {
-                    if (Array.isArray(value)) {
-                        return _.every(value, item => {
-                            return _.isEqual(targetValue, item);
-                        });
-                    }
+                if (prop === Op.all) {
                     return _.isEqual(targetValue, value);
+                }
+
+                if (prop === Op.between) {
+                    return this._getBetweenValue(value, targetValue);
+                }
+
+                if (prop === Op.notBetween) {
+                    return !this._getBetweenValue(value, targetValue);
+                }
+
+                if (prop === Op.overlap) {
+                    if (!Array.isArray(targetValue)) {
+                        throw new Error(`The key '${key}' value should be array type.`);
+                    }
+
+                    return _.intersection(value, targetValue).length > 0;
                 }
         }
 
@@ -325,9 +337,11 @@ class Conditionalize {
         switch (prop) {
             case Op.any:
             case Op.all:
-                if (value[Op.values]) {
-                    return this.joinKeyValue(key, value[Op.values], prop, options);
-                }
+            case Op.overlap:
+            case Op.contains:
+            case Op.contained:
+            case Op.between:
+            case Op.notBetween:
                 return this.joinKeyValue(key, this.escape(value), prop, options);
             case Op.col:
                 return this.joinKeyValue(key, this.escape(_.get(options.dataSource, value)), Op.eq, options);

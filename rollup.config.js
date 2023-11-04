@@ -79,7 +79,7 @@ const buildESMConfig = ({ input, name, banner }) => {
             banner,
             file: `es/${outputFileName}.js`,
             preferConst: true,
-            exports: 'named',
+            // exports: 'named',
             format: 'esm'
         }
     });
@@ -94,7 +94,7 @@ const buildCJSConfig = ({ input, name, banner }) => {
             banner,
             file: `lib/${outputFileName}.js`,
             preferConst: true,
-            exports: 'default',
+            // exports: 'default',
             format: 'cjs'
         }
     });
@@ -112,7 +112,7 @@ const buildUMDConfig = ({ name, banner, input }) => {
                 banner,
                 file: `dist/${outputFileName}.js`,
                 format: 'umd',
-                exports: 'default',
+                // exports: 'default',
                 globals: {
                     lodash: '_'
                 }
@@ -122,7 +122,7 @@ const buildUMDConfig = ({ name, banner, input }) => {
                 banner,
                 file: `public/${outputFileName}.js`,
                 format: 'umd',
-                exports: 'default',
+                // exports: 'default',
                 sourcemap: true,
                 globals: {
                     lodash: '_'

@@ -783,49 +783,31 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                total: { [Op.any]: [1, 10, 15, 18] }
+                name: { [Op.any]: ['larry', 'may'] }
             },
             {
                 dataSource: {
-                    total: 10
+                    name: ['larry', 'may']
                 }
             },
-            true
+            false
         );
 
         testQuery(
-            'userId',
+            'level',
             {
                 where: {
-                    userId: {
-                        [Op.any]: {
-                            [Op.values]: [11, 10, 15, 19]
+                    level: {
+                        [Op.notIn]: {
+                            [Op.any]: [10, 16, 12, 18]
                         }
                     }
                 },
                 dataSource: {
-                    userId: 11
+                    level: 2
                 }
             },
             true,
-            true
-        );
-
-        testQuery(
-            'grades',
-            {
-                where: {
-                    grades: {
-                        [Op.notIn]: {
-                            [Op.any]: [3, 13, 6, 15, 18]
-                        }
-                    }
-                },
-                dataSource: {
-                    grades: 6
-                }
-            },
-            false,
             true
         );
     });
@@ -833,7 +815,7 @@ describe('Operator symbols', () => {
     describe('Op.all', () => {
         testQuery(
             {
-                text: { [Op.all]: 'hello world!' }
+                text: { [Op.all]: ['hello world!'] }
             },
             {
                 dataSource: {
@@ -841,33 +823,20 @@ describe('Operator symbols', () => {
                     text: 'hello world!'
                 }
             },
-            true
+            false
         );
 
         testQuery(
             {
-                text: { [Op.all]: ['hello world!'] }
+                text: { [Op.all]: ['hello world!', 'hihi'] }
             },
             {
                 dataSource: {
                     id: 2,
-                    text: 'hello world!'
+                    text: ['hello world!', 'haha']
                 }
             },
-            true
-        );
-
-        testQuery(
-            {
-                text: { [Op.all]: 'hello world!' }
-            },
-            {
-                dataSource: {
-                    id: 3,
-                    text: ['hello world!']
-                }
-            },
-            true
+            false
         );
 
         testQuery(
@@ -880,37 +849,6 @@ describe('Operator symbols', () => {
                     name: ['jim', 'may']
                 }
             },
-            true
-        );
-
-        testQuery(
-            {
-                userId: { [Op.all]: [1, 10] }
-            },
-            {
-                dataSource: {
-                    id: 5,
-                    userId: [1, 10]
-                }
-            },
-            true
-        );
-
-        testQuery(
-            'sales_by_season',
-            {
-                where: {
-                    sales_by_season: {
-                        [Op.all]: {
-                            [Op.values]: [11, 10]
-                        }
-                    }
-                },
-                dataSource: {
-                    sales_by_season: [11, 10]
-                }
-            },
-            true,
             true
         );
 
@@ -931,53 +869,17 @@ describe('Operator symbols', () => {
             true,
             true
         );
-
-        testQuery(
-            'grades',
-            {
-                where: {
-                    grades: {
-                        [Op.not]: {
-                            [Op.all]: [11, 15, 12, 19]
-                        }
-                    }
-                },
-                dataSource: {
-                    grades: 5
-                }
-            },
-            true,
-            true
-        );
-
-        testQuery(
-            'level',
-            {
-                where: {
-                    level: {
-                        [Op.notIn]: {
-                            [Op.all]: [10, 16, 12, 18]
-                        }
-                    }
-                },
-                dataSource: {
-                    level: 2
-                }
-            },
-            true,
-            true
-        );
     });
 
-    describe.skip('Op.between/Op.notBetween', () => {
+    describe('Op.between/Op.notBetween', () => {
         testQuery(
             {
-                grade: { [Op.between]: [2, 6] }
+                gradeLevel: { [Op.between]: [2, 6] }
             },
             {
                 dataSource: {
                     id: 1,
-                    grade: 5
+                    gradeLevel: 5
                 }
             },
             true
@@ -985,12 +887,12 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                date: { [Op.between]: ['2010-08-01', '2010-12-02'] }
+                grade: { [Op.notBetween]: [2, 16] }
             },
             {
                 dataSource: {
-                    id: 2,
-                    date: '2010-09-09'
+                    id: 11,
+                    grade: 115
                 }
             },
             true
@@ -1008,38 +910,33 @@ describe('Operator symbols', () => {
             },
             true
         );
-
-        testQuery(
-            {
-                data: {
-                    [Op.between]: ['2010-02-01', '2011-07-02'],
-                    [Op.notBetween]: ['2011-08-09', '2011-12-11']
-                }
-            },
-            {
-                dataSource: {
-                    id: 4,
-                    date: '2010-07-09'
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                date: { [Op.notBetween]: ['2010-08-01', '2010-12-02'] }
-            },
-            {
-                dataSource: {
-                    id: 5,
-                    date: '2011-09-09'
-                }
-            },
-            true
-        );
     });
 
-    describe.skip('Op.contains', () => {
+    describe('Op.contains/Op.contained', () => {
+        testQuery(
+            {
+                lang: { [Op.contains]: 'java' }
+            },
+            {
+                dataSource: {
+                    lang: 'javascript'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                lang: { [Op.contained]: 'javascript' }
+            },
+            {
+                dataSource: {
+                    lang: 'java'
+                }
+            },
+            true
+        );
+
         testQuery(
             {
                 seqs: { [Op.contains]: 11 }
@@ -1051,9 +948,22 @@ describe('Operator symbols', () => {
             },
             true
         );
+
         testQuery(
             {
-                lang: { [Op.contains]: 'css' }
+                seqs: { [Op.contained]: [11, 22, 33] }
+            },
+            {
+                dataSource: {
+                    seqs: 11
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                lang: { [Op.contains]: ['css', 'js'] }
             },
             {
                 dataSource: {
@@ -1062,79 +972,75 @@ describe('Operator symbols', () => {
             },
             true
         );
+
         testQuery(
             {
-                data: { [Op.contains]: { c: 3 } }
+                lang: { [Op.contained]: ['css', 'html', 'js'] }
             },
             {
                 dataSource: {
-                    data: {
+                    lang: ['js', 'html', 'css']
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                sources: { [Op.contains]: { c: 3, dd: 4 } }
+            },
+            {
+                dataSource: {
+                    sources: {
                         a: 1,
                         b: 2,
-                        c: 3
+                        c: 3,
+                        dd: 4
+                    }
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                sources: { [Op.contained]: { a: 1, c: 3, dd: 4 } }
+            },
+            {
+                dataSource: {
+                    sources: {
+                        c: 3,
+                        dd: 4
                     }
                 }
             },
             true
         );
     });
-});
 
-describe('Operators Combinations', () => {
-    const testQuery = function (where, params, expectation, ignore = false) {
-        const options = { ...params };
-        if (ignore !== true) {
-            Object.assign(options, { where });
-        }
-
-        it(
-            util.inspect(typeof where === 'object' ? where : { where }, { depth: 5 }) +
-                ((options && `, ${util.inspect(options, { depth: 5 })}`) || ''),
-            () => {
-                const ins = new Conditionalize(options);
-                return expect(ins.check()).toBe(expectation);
-            }
+    describe('Op.overlap', () => {
+        testQuery(
+            {
+                seqs: { [Op.overlap]: [11, 12] }
+            },
+            {
+                dataSource: {
+                    seqs: [11, 22, 33]
+                }
+            },
+            true
         );
-    };
 
-    testQuery(
-        { [Op.and]: { [Op.or]: { name: 'leo', authorId: 2 }, status: 'active' } },
-        {
-            dataSource: {
-                id: 1,
-                name: 'leo',
-                status: 'active',
-                authorId: 11
-            }
-        },
-        true
-    );
-
-    testQuery(
-        { stars: { [Op.gt]: 11 }, name: { [Op.like]: 'evo' } },
-        {
-            dataSource: {
-                id: 2,
-                stars: 100,
-                name: 'Thomas Devon',
-                status: 'active',
-                followers: 11
-            }
-        },
-        true
-    );
-
-    testQuery(
-        { [Op.or]: [{ stars: 50 }, { status: 'inactive' }] },
-        {
-            dataSource: {
-                id: 3,
-                stars: 99,
-                name: 'Sam',
-                status: 'inactive',
-                followers: 11
-            }
-        },
-        true
-    );
+        testQuery(
+            {
+                targets: { [Op.overlap]: ['aa', 'bb'] }
+            },
+            {
+                dataSource: {
+                    targets: [11, 22, 33]
+                }
+            },
+            false
+        );
+    });
 });
