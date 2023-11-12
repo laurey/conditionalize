@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import Op from './operators';
-import * as Utils from './utils';
+import * as Utils from './helpers';
 
 const OperatorHelpers = {
     OperatorMap: {

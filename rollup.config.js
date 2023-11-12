@@ -79,9 +79,16 @@ const buildESMConfig = ({ input, name, banner }) => {
             banner,
             file: `es/${outputFileName}.js`,
             preferConst: true,
-            // exports: 'named',
+            exports: 'auto',
             format: 'esm'
-        }
+        },
+        plugins: [
+            babel({
+                exclude: ['node_modules/**'],
+                babelHelpers: 'runtime',
+                configFile: path.resolve(__dirname, 'babel.config.cjs')
+            })
+        ]
     });
 };
 
@@ -94,7 +101,7 @@ const buildCJSConfig = ({ input, name, banner }) => {
             banner,
             file: `lib/${outputFileName}.js`,
             preferConst: true,
-            // exports: 'default',
+            exports: 'auto',
             format: 'cjs'
         }
     });
@@ -105,14 +112,13 @@ const buildUMDConfig = ({ name, banner, input }) => {
         input,
         browser: true,
         minifiedVersion: true,
-        // external: [/@babel\/runtime/],
         output: [
             {
                 name,
                 banner,
                 file: `dist/${outputFileName}.js`,
                 format: 'umd',
-                // exports: 'default',
+                exports: 'auto',
                 globals: {
                     lodash: '_'
                 }
@@ -122,20 +128,16 @@ const buildUMDConfig = ({ name, banner, input }) => {
                 banner,
                 file: `public/${outputFileName}.js`,
                 format: 'umd',
-                // exports: 'default',
                 sourcemap: true,
+                exports: 'auto',
                 globals: {
                     lodash: '_'
-                    // bluebird: 'P',
-                    // moment: 'moment',
-                    // validator: 'validator'
                 }
             }
         ],
         plugins: [
             babel({
                 exclude: ['node_modules/**'],
-                // presets: ['@babel/preset-env'],
                 babelHelpers: 'bundled',
                 configFile: path.resolve(__dirname, 'babel.config.cjs')
             })
