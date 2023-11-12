@@ -59,6 +59,6 @@ export function getComplexSize(obj) {
  * @param  {Object} obj
  * @returns {boolean}
  */
-function isWhereEmpty(obj) {
+export function isWhereEmpty(obj) {
     return !!obj && _.isEmpty(obj) && getOperators(obj).length === 0;
 }

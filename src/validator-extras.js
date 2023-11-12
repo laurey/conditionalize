@@ -1,3 +1,7 @@
+/**
+ *
+ */
+
 const extensions = {
     extend(name, fn) {
         this[name] = fn;

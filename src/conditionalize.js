@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
 import Op from './operators';
-import * as Utils from './utils';
-import { logger } from './utils/logger';
+import * as Utils from './helpers';
+import { warn, deprecated } from './utils';
 import OperatorHelpers from './operatorHelpers';
 import { extensions as Validator } from './validator-extras';
 import { version } from '../package.json';
@@ -147,7 +147,7 @@ class Conditionalize {
         let comparator = this.OperatorMap[prop] || this.OperatorMap[Op.eq];
         if (comparator === undefined) {
             const msg = `${key} and ${value} has no comparison operator`;
-            process.env.NODE_ENV !== 'production' && logger.warn(msg);
+            warn(msg);
             throw new Error(msg);
         }
 
@@ -197,7 +197,7 @@ class Conditionalize {
     _getLikeValue(key, value, prop, options) {
         if (typeof key !== 'string' && !Array.isArray(key)) {
             const msg = `Invalid type of key: ${key}. key should be string or array.`;
-            process.env.NODE_ENV !== 'production' && logger.warn(msg);
+            warn(msg);
             throw new Error(msg);
         }
         const targetValue = _.get(options.dataSource, key);
@@ -209,7 +209,7 @@ class Conditionalize {
 
         if (typeof Validator[validatorType] !== 'function') {
             const msg = `Invalid validator function: ${validatorType}`;
-            process.env.NODE_ENV !== 'production' && logger.warn(msg);
+            warn(msg);
             throw new Error(msg);
         }
 
@@ -244,7 +244,7 @@ class Conditionalize {
         const targetValue = _.get(options.dataSource, key);
         if (typeof key !== 'string' && !Array.isArray(key)) {
             const msg = `Expect typeof key to be string or array, but got: "${typeof key}".`;
-            process.env.NODE_ENV !== 'production' && logger.warn(msg);
+            warn(msg);
             throw new Error(msg);
         }
 
@@ -457,7 +457,7 @@ class Conditionalize {
 
         if (typeof where === 'string') {
             const msg = "Not support for `{where: 'raw query'}`.";
-            process.env.NODE_ENV !== 'production' && logger.warn(msg);
+            warn(msg);
             throw new Error(msg);
         }
 
@@ -508,7 +508,7 @@ class Conditionalize {
                 key = Op.and;
             } else {
                 const msg = 'Literal replacements in the `where` object is not supported.';
-                process.env.NODE_ENV !== 'production' && logger.warn(msg);
+                warn(msg);
                 throw new Error(msg);
             }
         }
