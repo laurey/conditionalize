@@ -38,7 +38,9 @@ You can import the library using `import` or `require` approach:
 
 ```js
 // ES6
-import Conditionalize, {Op} from 'conditionalize';
+import Conditionalize from 'conditionalize';
+
+const { Op } = Conditionalize;
 
 const instance = new Conditionalize();
 console.log(instance.check());
@@ -57,7 +59,7 @@ console.log(instance.check());
 ## Examples
 ### Basic
 ```js
-import Conditionalize, {Op} from 'conditionalize';
+import Conditionalize from 'conditionalize';
 
 const instance = new Conditionalize();
 
@@ -75,7 +77,9 @@ operatorsMap | object | - | The map of operators
 operatorsAliases | object | - | The alias of operators
 
 ```js
-import Conditionalize, {Op} from 'conditionalize';
+import Conditionalize from 'conditionalize';
+
+const { Op } = Conditionalize;
 
 const instance = new Conditionalize({
   dataSource: {
@@ -83,7 +87,9 @@ const instance = new Conditionalize({
     rank: 2
   },
   where: {
-    authorId: 22
+    authorId: {
+      [Op.gte]: 22
+    }
   }
 });
 

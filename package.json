@@ -25,14 +25,13 @@
     "clean:browser": "rimraf dist",
     "coverage": "jest --coverage",
     "dev": "run-p serve watch",
-    "start": "nodemon --exec 'npm run dev'",
     "prebuild": "npm run clean",
     "release": "np",
     "serve": "serve public",
     "test": "jest",
     "test:watch": "jest --watch",
     "version": "npm run build",
-    "watch": "rollup -c -w"
+    "watch": "rollup -c -w --env=browser"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
