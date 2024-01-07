@@ -57,9 +57,9 @@ const Op = {
     contains: Symbol.for('contains'),
     contained: Symbol.for('contained'),
     between: Symbol.for('between'),
-    notBetween: Symbol.for('notBetween')
+    notBetween: Symbol.for('notBetween'),
     // custom operators
-    // isDate: Symbol.for('isDate')
+    isDate: Symbol.for('isDate')
     // isIPv4: Symbol.for('isIPv4')
 };
 

@@ -220,7 +220,7 @@ describe('Operator symbols', () => {
 
     describe('Op.not', () => {
         testQuery(
-            { name: { [Op.not]: ['js', 'i'] } }, // Op.notIn
+            { name: { [Op.not]: ['js', 'html'] } }, // Op.notIn
             {
                 dataSource: {
                     name: 'HTML',
@@ -231,22 +231,33 @@ describe('Operator symbols', () => {
         );
 
         testQuery(
-            { deleted: { [Op.not]: true } },
+            { isMatch: { [Op.not]: false } }, // String.match
             {
                 dataSource: {
                     name: 'apple',
-                    deleted: false
+                    isMatch: 'false'
                 }
             },
-            true
+            false
         );
 
         testQuery(
-            { deleted: { [Op.not]: null } },
+            { deleted: { [Op.not]: false } }, // String.match
+            {
+                dataSource: {
+                    name: 'applePen',
+                    deleted: false
+                }
+            },
+            false
+        );
+
+        testQuery(
+            { addr: { [Op.not]: null } }, // String.match
             {
                 dataSource: {
                     name: 'sass',
-                    deleted: 'nil'
+                    addr: 'nil'
                 }
             },
             true
@@ -257,6 +268,17 @@ describe('Operator symbols', () => {
             {
                 dataSource: {
                     langs: 'javascript'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            { age: { [Op.not]: 55 } }, // Op.ne
+            {
+                dataSource: {
+                    name: 'not',
+                    age: 22
                 }
             },
             true
@@ -290,6 +312,28 @@ describe('Operator symbols', () => {
             {
                 dataSource: {
                     name: 'Rosee'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            { isMatch: { [Op.is]: true } }, // String.match
+            {
+                dataSource: {
+                    name: 'Banana',
+                    isMatch: 'true1'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            { added: { [Op.is]: true } }, // String.match
+            {
+                dataSource: {
+                    name: 'applePen',
+                    added: true
                 }
             },
             true
@@ -1041,6 +1085,47 @@ describe('Operator symbols', () => {
                 }
             },
             false
+        );
+
+        // testQuery(
+        //     {
+        //         range: { [Op.overlap]: [new Date('2010-08-01'), new Date('2010-11-01')] }
+        //     },
+        //     {
+        //         dataSource: {
+        //             id: 1,
+        //             range: [new Date('2010-02-01'), new Date('2010-09-01')]
+        //         }
+        //     },
+        //     true
+        // );
+    });
+
+    describe('Op.isDate', () => {
+        testQuery(
+            {
+                bod: { [Op.isDate]: true }
+            },
+            {
+                dataSource: {
+                    name: 'dood',
+                    bod: '1999-11-11 11:22:33'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                since: { [Op.isDate]: false }
+            },
+            {
+                dataSource: {
+                    name: 'puppy',
+                    since: 'not-a-valid-date'
+                }
+            },
+            true
         );
     });
 });

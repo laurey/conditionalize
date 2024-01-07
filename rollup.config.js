@@ -77,10 +77,14 @@ const buildESMConfig = ({ input, name, banner }) => {
         output: {
             name,
             banner,
-            file: `es/${outputFileName}.js`,
+            file: pkg.module,
             preferConst: true,
             exports: 'auto',
-            format: 'esm'
+            format: 'esm',
+            globals: {
+                lodash: '_',
+                moment: 'moment'
+            }
         },
         plugins: [
             babel({
@@ -99,10 +103,14 @@ const buildCJSConfig = ({ input, name, banner }) => {
         output: {
             name,
             banner,
-            file: `lib/${outputFileName}.js`,
+            file: pkg.main,
             preferConst: true,
             exports: 'auto',
-            format: 'cjs'
+            format: 'cjs',
+            globals: {
+                lodash: '_',
+                moment: 'moment'
+            }
         }
     });
 };
@@ -116,11 +124,12 @@ const buildUMDConfig = ({ name, banner, input }) => {
             {
                 name,
                 banner,
-                file: `dist/${outputFileName}.js`,
+                file: pkg.umd,
                 format: 'umd',
                 exports: 'auto',
                 globals: {
-                    lodash: '_'
+                    lodash: '_',
+                    moment: 'moment'
                 }
             },
             {
@@ -131,7 +140,8 @@ const buildUMDConfig = ({ name, banner, input }) => {
                 sourcemap: true,
                 exports: 'auto',
                 globals: {
-                    lodash: '_'
+                    lodash: '_',
+                    moment: 'moment'
                 }
             }
         ],
@@ -149,7 +159,7 @@ const buildUMDConfig = ({ name, banner, input }) => {
 
 export default async args => {
     const input = args?.entry ?? defaultInput;
-    const env = args?.env ?? 'es';
+    const env = process.env.BABEL_ENV ?? 'esm';
     const year = new Date().getFullYear();
     const banner = `// Conditionalize v${pkg.version} Copyright (c) ${year} ${pkg.author} and contributors`;
 

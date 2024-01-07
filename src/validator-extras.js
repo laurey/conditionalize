@@ -2,6 +2,11 @@
  *
  */
 
+import _ from 'lodash';
+import moment from 'moment';
+
+const validator = _.cloneDeep({});
+
 const extensions = {
     extend(name, fn) {
         this[name] = fn;
@@ -54,4 +59,24 @@ export const addValidationMethods = methods => {
     });
 };
 
-export { extensions };
+validator.isNotNull = function (value) {
+    return value !== null && value !== undefined;
+};
+
+validator.isDate = function (dateString) {
+    // by doing a preliminary check on `dateString`
+    // to avoid http://momentjs.com/guides/#/warnings/js-date/
+    const parsed = Date.parse(dateString);
+    if (isNaN(parsed)) {
+        return false;
+    }
+    // otherwise convert to ISO-8601 as moment prefers
+    const date = new Date(parsed);
+    return moment(date.toISOString()).isValid();
+};
+
+_.forEach(extensions, (extend, key) => {
+    validator[key] = extend;
+});
+
+export { extensions, validator };

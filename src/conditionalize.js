@@ -2,9 +2,9 @@ import _ from 'lodash';
 
 import Op from './operators';
 import * as Utils from './helpers';
-import { warn, deprecated } from './utils';
+import { warn } from './utils';
 import OperatorHelpers from './operatorHelpers';
-import { extensions as Validator } from './validator-extras';
+import { validator as Validator } from './validator-extras';
 import { version } from '../package.json';
 
 class Conditionalize {
@@ -270,6 +270,8 @@ class Conditionalize {
             case Op.not:
             case Op.notLike:
                 return this._getLikeValue(key, value, Op.not, options);
+            case Op.isDate:
+                return this._getLikeValue(key, value, prop, options) === value;
             case Op.in:
             case Op.notIn:
                 return prop === Op.in ? _.includes(value, targetValue) : !_.includes(value, targetValue);
