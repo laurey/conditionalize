@@ -33,9 +33,9 @@ const OperatorHelpers = {
         [Op.contains]: '@>',
         [Op.contained]: '<@',
         [Op.between]: 'BETWEEN',
-        [Op.notBetween]: 'NOT BETWEEN'
+        [Op.notBetween]: 'NOT BETWEEN',
         // custom
-        // [Op.isDate]: 'isDate'
+        [Op.isDate]: 'isDate'
         // [Op.isIPv4]: 'isIPv4'
     },
 

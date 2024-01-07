@@ -3,9 +3,9 @@
   "version": "0.0.8",
   "author": "Luis",
   "license": "MIT",
-  "main": "lib/conditionalize.js",
-  "module": "es/conditionalize.js",
-  "browser": "dist/conditionalize.min.js",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "umd": "dist/index.js",
   "description": "A library of conditions builder and validator",
   "repository": {
     "type": "git",
@@ -15,14 +15,14 @@
     "registry": "https://registry.npmjs.org"
   },
   "scripts": {
-    "build:browser": "rollup -c --environment BABEL_ENV:browser,NODE_ENV:production --env=browser",
-    "build:es": "rollup -c --environment BABEL_ENV:es,NODE_ENV:production --env=es",
-    "build:lib": "rollup -c --environment BABEL_ENV:cjs,NODE_ENV:production --env=cjs",
+    "build:umd": "rollup -c --environment BABEL_ENV:umd,NODE_ENV:production",
+    "build:esm": "rollup -c --environment BABEL_ENV:esm,NODE_ENV:production",
+    "build:lib": "rollup -c --environment BABEL_ENV:cjs,NODE_ENV:production",
     "build": "run-p build:*",
     "clean": "run-p clean:*",
-    "clean:es": "rimraf es",
+    "clean:es": "rimraf esm es",
     "clean:node": "rimraf lib",
-    "clean:browser": "rimraf dist",
+    "clean:umd": "rimraf umd dist",
     "coverage": "jest --coverage",
     "dev": "run-p serve watch",
     "prebuild": "npm run clean",
@@ -31,7 +31,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "version": "npm run build",
-    "watch": "rollup -c -w --env=browser"
+    "watch": "rollup -c -w --environment BABEL_ENV:umd"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
@@ -80,16 +80,18 @@
     "validator": ">=13.x"
   },
   "peerDependencies": {
-    "lodash": ">=4.x"
+    "lodash": ">=4.x",
+    "moment": ">=2.24.0"
   },
   "engines": {
     "node": ">=14.x"
   },
   "files": [
-    "es",
-    "esm",
-    "lib",
-    "dist"
+    "LICENSE",
+    "README.md",
+    "esm/",
+    "lib/",
+    "dist/"
   ],
   "keywords": [
     "assert",

@@ -1,8 +1,8 @@
 const config = api => {
-    const isBrowser = api.env('browser');
+    const isBrowser = api.env('umd') || api.env('browser');
     const isTest = api.env('test');
     const isCJS = api.env('cjs');
-    // const isEnvES = api.env('es');
+    // const isEnvESM = api.env('esm');
     // const env = api.cache(() => process.env.NODE_ENV); // test/development/production
 
     return {
