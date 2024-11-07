@@ -897,6 +897,19 @@ describe('Operator symbols', () => {
         );
 
         testQuery(
+            {
+                name: { [Op.all]: ['han', 'jim', 'may'] }
+            },
+            {
+                dataSource: {
+                    id: 4,
+                    name: ['jim', 'may', 'han']
+                }
+            },
+            false
+        );
+
+        testQuery(
             'grades',
             {
                 where: {
