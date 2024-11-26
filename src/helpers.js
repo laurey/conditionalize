@@ -62,3 +62,16 @@ export function getComplexSize(obj) {
 export function isWhereEmpty(obj) {
     return !!obj && _.isEmpty(obj) && getOperators(obj).length === 0;
 }
+
+/**
+ * Check if value is primitive.
+ */
+export function isPrimitive(value) {
+    return (
+        typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'bigint' ||
+        typeof value === 'symbol' ||
+        typeof value === 'boolean'
+    );
+}
