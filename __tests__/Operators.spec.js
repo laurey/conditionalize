@@ -721,7 +721,67 @@ describe('Operator symbols', () => {
         );
     });
 
-    describe('Op.ne/Op.eq', () => {
+    describe('Op.ne/Op.neq/Op.eq', () => {
+        testQuery(
+            {
+                age: { [Op.eq]: 35 }
+            },
+            {
+                dataSource: {
+                    age: '35'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                truthy: { [Op.eq]: 1 }
+            },
+            {
+                dataSource: {
+                    truthy: true
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                name: { [Op.eq]: Symbol('name') }
+            },
+            {
+                dataSource: {
+                    name: Symbol('name')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                name: { [Op.neq]: Symbol('name') }
+            },
+            {
+                dataSource: {
+                    name: Symbol('name')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                falsy: { [Op.eq]: false }
+            },
+            {
+                dataSource: {
+                    falsy: 'false'
+                }
+            },
+            false
+        );
+
         testQuery(
             {
                 name: { [Op.eq]: 'jack' }
@@ -769,6 +829,201 @@ describe('Operator symbols', () => {
                 }
             },
             false
+        );
+
+        testQuery(
+            {
+                age: { [Op.ne]: 35 }
+            },
+            {
+                dataSource: {
+                    age: '35'
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                expires: { [Op.eq]: global.BigInt(9007199254740991n) }
+            },
+            {
+                dataSource: {
+                    expires: global.BigInt('9007199254740991')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                times: { [Op.neq]: global.BigInt(9007199254740991n) }
+            },
+            {
+                dataSource: {
+                    times: global.BigInt('9007199254740991')
+                }
+            },
+            false
+        );
+    });
+
+    describe('Op.neqeq/Op.eqeq', () => {
+        testQuery(
+            {
+                truthy: { [Op.eqeq]: 1 }
+            },
+            {
+                dataSource: {
+                    truthy: true
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                truthy: { [Op.neqeq]: 1 }
+            },
+            {
+                dataSource: {
+                    truthy: true
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                age: { [Op.eqeq]: 21 }
+            },
+            {
+                dataSource: {
+                    age: '21'
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                age: { [Op.eqeq]: 22 }
+            },
+            {
+                dataSource: {
+                    age: 22
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                order: { [Op.eqeq]: [1, 2, 3] }
+            },
+            {
+                dataSource: {
+                    order: [1, 2, 3]
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                age: { [Op.neqeq]: '23' }
+            },
+            {
+                dataSource: {
+                    age: 23
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                age: { [Op.neqeq]: 22 }
+            },
+            {
+                dataSource: {
+                    age: 22
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                email: { [Op.neqeq]: 'jack@gmail.com' }
+            },
+            {
+                dataSource: {
+                    email: 'jack@yahoo.com'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                deletedAt: { [Op.neqeq]: null }
+            },
+            {
+                dataSource: {
+                    deletedAt: null,
+                    email: 'jack@yahoo.com'
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                name: { [Op.eqeq]: Symbol('name') }
+            },
+            {
+                dataSource: {
+                    name: Symbol('name')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                expires: { [Op.eqeq]: global.BigInt(9007199254740991n) }
+            },
+            {
+                dataSource: {
+                    expires: global.BigInt('9007199254740991')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                times: { [Op.neqeq]: global.BigInt(9007199254740991n) }
+            },
+            {
+                dataSource: {
+                    times: global.BigInt('9007199254740991')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                name: { [Op.neqeq]: Symbol('name') }
+            },
+            {
+                dataSource: {
+                    name: Symbol('name')
+                }
+            },
+            true
         );
     });
 
@@ -894,6 +1149,19 @@ describe('Operator symbols', () => {
                 }
             },
             true
+        );
+
+        testQuery(
+            {
+                name: { [Op.all]: ['han', 'jim', 'may'] }
+            },
+            {
+                dataSource: {
+                    id: 4,
+                    name: ['jim', 'may', 'han']
+                }
+            },
+            false
         );
 
         testQuery(

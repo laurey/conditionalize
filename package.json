@@ -4,7 +4,7 @@
   "author": "Luis",
   "license": "MIT",
   "main": "lib/index.js",
-  "module": "esm/index.js",
+  "module": "esm/index.mjs",
   "umd": "dist/index.js",
   "description": "A library of conditions builder and validator",
   "repository": {

@@ -155,8 +155,6 @@ const buildUMDConfig = ({ name, banner, input }) => {
     });
 };
 
-// const buildAMDConfig = () => {};
-
 export default async args => {
     const input = args?.entry ?? defaultInput;
     const env = process.env.BABEL_ENV ?? 'esm';
