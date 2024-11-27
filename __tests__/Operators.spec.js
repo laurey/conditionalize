@@ -760,6 +760,30 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
+                age: { [Op.neq]: Symbol.for('11') }
+            },
+            {
+                dataSource: {
+                    age: Symbol.for('11')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                age: { [Op.eq]: Symbol.for('33') }
+            },
+            {
+                dataSource: {
+                    age: Symbol.for('33')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
                 name: { [Op.neq]: Symbol('name') }
             },
             {
@@ -903,6 +927,30 @@ describe('Operator symbols', () => {
                 }
             },
             false
+        );
+
+        testQuery(
+            {
+                age: { [Op.neqeq]: Symbol.for('1') }
+            },
+            {
+                dataSource: {
+                    age: Symbol.for('1')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                eqeq: { [Op.eqeq]: Symbol.for('11') }
+            },
+            {
+                dataSource: {
+                    eqeq: Symbol.for('11')
+                }
+            },
+            true
         );
 
         testQuery(
