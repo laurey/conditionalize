@@ -736,7 +736,43 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
+                age: { [Op.eq]: 35 }
+            },
+            {
+                dataSource: {
+                    age: new Number('35')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                age: { [Op.eq]: '33' }
+            },
+            {
+                dataSource: {
+                    age: new Number('33')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
                 truthy: { [Op.eq]: 1 }
+            },
+            {
+                dataSource: {
+                    truthy: true
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                truthy: { [Op.eq]: new Boolean(10) }
             },
             {
                 dataSource: {
@@ -820,11 +856,31 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                order: { [Op.eq]: [1, 2, 3] }
+                orders: { [Op.eq]: [1, 2, 3] }
             },
             {
                 dataSource: {
-                    order: [1, 2, 3]
+                    orders: [1, 2, 3]
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                eq: {
+                    [Op.eq]: {
+                        a: 1,
+                        b: [11, 22, 33]
+                    }
+                }
+            },
+            {
+                dataSource: {
+                    eq: {
+                        a: 1,
+                        b: [11, 22, 33]
+                    }
                 }
             },
             true
@@ -931,6 +987,30 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
+                eqeq: { [Op.eqeq]: 11 }
+            },
+            {
+                dataSource: {
+                    eqeq: new Number('11')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                age: { [Op.eqeq]: '12' }
+            },
+            {
+                dataSource: {
+                    age: new Number('12')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
                 age: { [Op.neqeq]: Symbol.for('1') }
             },
             {
@@ -974,7 +1054,25 @@ describe('Operator symbols', () => {
                     order: [1, 2, 3]
                 }
             },
-            true
+            false
+        );
+
+        testQuery(
+            {
+                order: {
+                    [Op.eqeq]: {
+                        aa: 11
+                    }
+                }
+            },
+            {
+                dataSource: {
+                    order: {
+                        aa: 11
+                    }
+                }
+            },
+            false
         );
 
         testQuery(

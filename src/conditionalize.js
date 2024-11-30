@@ -249,19 +249,23 @@ class Conditionalize {
         }
 
         switch (prop) {
-            case Op.ne:
-            case Op.neq:
-                return Utils.isPrimitive(value)
-                    ? !this._getEqualValue(targetValue, value)
-                    : !_.isEqual(targetValue, value);
-            case Op.neqeq:
-                return !_.isEqual(targetValue, value);
             case Op.eq:
-                return Utils.isPrimitive(value)
+                return Utils.isPrimitive(value) || Utils.isPrimitive(targetValue)
                     ? this._getEqualValue(targetValue, value)
                     : _.isEqual(targetValue, value);
+            case Op.ne:
+            case Op.neq:
+                return Utils.isPrimitive(value) || Utils.isPrimitive(targetValue)
+                    ? !this._getEqualValue(targetValue, value)
+                    : !_.isEqual(targetValue, value);
+            // case Op.eqeq:
+            //     return Utils.isPrimitive(value) || Utils.isPrimitive(targetValue)
+            //         ? this._getEqualEqualValue(targetValue, value)
+            //         : _.isEqual(targetValue, value);
             case Op.eqeq:
-                return _.isEqual(targetValue, value);
+                return this._getEqualEqualValue(targetValue, value);
+            case Op.neqeq:
+                return !this._getEqualEqualValue(targetValue, value);
             case Op.lt:
                 return targetValue < value;
             case Op.lte:
