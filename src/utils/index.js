@@ -25,3 +25,21 @@ export function warn(message) {
         }
     }
 }
+
+export function isUndef(v) {
+    return v === undefined || v === null;
+}
+
+export function isDef(v) {
+    return v !== undefined && v !== null;
+}
+
+export function isPrimitive(value) {
+    return (
+        typeof value === 'string' ||
+        typeof value === 'symbol' ||
+        typeof value === 'number' ||
+        typeof value === 'bigint' ||
+        typeof value === 'boolean'
+    );
+}

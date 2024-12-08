@@ -75,6 +75,38 @@ validator.isDate = function (dateString) {
     return moment(date.toISOString()).isValid();
 };
 
+const default_time_options = {
+    hourFormat: 'hour24',
+    mode: 'default'
+};
+const formats = {
+    hour24: {
+        default: /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/,
+        withSeconds: /^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/
+    },
+    hour12: {
+        default: /^(0?[1-9]|1[0-2]):([0-5][0-9]) (A|P)M$/,
+        withSeconds: /^(0?[1-9]|1[0-2]):([0-5][0-9]):([0-5][0-9]) (A|P)M$/
+    }
+};
+
+function merge() {
+    const data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    const args = arguments.length > 1 ? arguments[1] : undefined;
+    for (const key in args) {
+        if (typeof data[key] === 'undefined') {
+            data[key] = args[key];
+        }
+    }
+    return data;
+}
+
+validator.isTime = function (input, options) {
+    options = merge(options, default_time_options);
+    if (typeof input !== 'string') return false;
+    return formats[options.hourFormat][options.mode].test(input);
+};
+
 _.forEach(extensions, (extend, key) => {
     validator[key] = extend;
 });
