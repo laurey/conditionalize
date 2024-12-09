@@ -1,4 +1,4 @@
-import util from 'util';
+import util from 'node:util';
 
 import Conditionalize from '../src/conditionalize';
 
@@ -73,24 +73,13 @@ describe('Operator symbols', () => {
 
     describe('Op.and', () => {
         testQuery(
-            { [Op.and]: [{ name: 'mike', age: 22 }] },
+            { [Op.and]: [] },
             {
                 dataSource: {
                     id: 1,
                     name: 'mike',
-                    age: 22
-                }
-            },
-            true
-        );
-
-        testQuery(
-            { [Op.and]: [] },
-            {
-                dataSource: {
-                    id: 4,
-                    name: 'jim',
-                    authorId: 13
+                    age: 22,
+                    authorId: 11
                 }
             },
             false
@@ -100,9 +89,10 @@ describe('Operator symbols', () => {
             { [Op.and]: {} },
             {
                 dataSource: {
-                    id: 5,
-                    name: 'lee',
-                    authorId: 15
+                    id: 1,
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11
                 }
             },
             true
@@ -112,9 +102,36 @@ describe('Operator symbols', () => {
             { [Op.and]: 1 },
             {
                 dataSource: {
-                    id: 7,
-                    name: 'leon',
-                    authorId: 31
+                    id: 1,
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11
+                }
+            },
+            true
+        );
+
+        testQuery(
+            { [Op.and]: [{ name: 'mike' }] },
+            {
+                dataSource: {
+                    id: 1,
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11
+                }
+            },
+            true
+        );
+
+        testQuery(
+            { [Op.and]: [{ name: 'mike' }, { age: 22 }] },
+            {
+                dataSource: {
+                    id: 1,
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11
                 }
             },
             true
@@ -129,18 +146,21 @@ describe('Operator symbols', () => {
             {
                 dataSource: {
                     id: 1,
-                    authorId: 22
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11
                 }
             },
             false
         );
 
         testQuery(
-            { [Op.or]: [{ name: 'leo' }, { name: 'jane' }] },
+            { [Op.or]: [{ name: 'mike' }, { name: 'jane' }] },
             {
                 dataSource: {
-                    id: 3,
-                    name: 'leo',
+                    id: 1,
+                    name: 'mike',
+                    age: 22,
                     authorId: 11
                 }
             },
@@ -151,9 +171,10 @@ describe('Operator symbols', () => {
             { [Op.or]: { name: 'leo', authorId: 11 } },
             {
                 dataSource: {
-                    id: 4,
-                    name: 'leo',
-                    authorId: 22
+                    id: 1,
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11
                 }
             },
             true
@@ -163,7 +184,7 @@ describe('Operator symbols', () => {
             {
                 [Op.or]: [
                     {
-                        authorId: 11
+                        authorId: 10
                     },
                     {
                         authorId: 12,
@@ -173,9 +194,10 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
-                    id: 6,
-                    name: 'lee',
-                    authorId: 12
+                    id: 1,
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11
                 }
             },
             false
@@ -185,9 +207,10 @@ describe('Operator symbols', () => {
             { [Op.or]: [] },
             {
                 dataSource: {
-                    id: 8,
-                    name: 'cici',
-                    authorId: 12
+                    id: 1,
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11
                 }
             },
             false
@@ -197,9 +220,10 @@ describe('Operator symbols', () => {
             { [Op.or]: {} },
             {
                 dataSource: {
-                    id: 9,
-                    name: 'lele',
-                    authorId: 13
+                    id: 1,
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11
                 }
             },
             true
@@ -209,8 +233,9 @@ describe('Operator symbols', () => {
             { [Op.or]: 1 },
             {
                 dataSource: {
-                    id: 11,
-                    name: 'leonon',
+                    id: 1,
+                    name: 'mike',
+                    age: 22,
                     authorId: 11
                 }
             },
@@ -220,32 +245,28 @@ describe('Operator symbols', () => {
 
     describe('Op.not', () => {
         testQuery(
-            { name: { [Op.not]: ['js', 'html'] } }, // Op.notIn
+            { country: { [Op.not]: ['us', 'uk'] } }, // Op.notIn
             {
                 dataSource: {
-                    name: 'HTML',
-                    status: 'active'
+                    id: 1,
+                    country: 'US',
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11
                 }
             },
             true
         );
 
         testQuery(
-            { isMatch: { [Op.not]: false } }, // String.match
-            {
-                dataSource: {
-                    name: 'apple',
-                    isMatch: 'false'
-                }
-            },
-            false
-        );
-
-        testQuery(
             { deleted: { [Op.not]: false } }, // String.match
             {
                 dataSource: {
-                    name: 'applePen',
+                    id: 1,
+                    country: 'US',
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11,
                     deleted: false
                 }
             },
@@ -256,7 +277,12 @@ describe('Operator symbols', () => {
             { addr: { [Op.not]: null } }, // String.match
             {
                 dataSource: {
-                    name: 'sass',
+                    id: 1,
+                    country: 'US',
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: false,
                     addr: 'nil'
                 }
             },
@@ -264,10 +290,16 @@ describe('Operator symbols', () => {
         );
 
         testQuery(
-            { langs: { [Op.not]: 'java' } }, // Op.ne
+            { favors: { [Op.not]: 'app' } }, // Op.ne
             {
                 dataSource: {
-                    langs: 'javascript'
+                    id: 1,
+                    country: 'US',
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: false,
+                    favors: 'apple'
                 }
             },
             true
@@ -277,8 +309,13 @@ describe('Operator symbols', () => {
             { age: { [Op.not]: 55 } }, // Op.ne
             {
                 dataSource: {
-                    name: 'not',
-                    age: 22
+                    id: 1,
+                    country: 'US',
+                    name: 'mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: false,
+                    favors: 'apple'
                 }
             },
             true
@@ -296,44 +333,66 @@ describe('Operator symbols', () => {
     describe('Op.is', () => {
         testQuery(
             {
-                name: { [Op.is]: ['rose', 'i'] }
+                name: { [Op.is]: ['MIKE', 'i'] }
             },
             {
                 dataSource: {
-                    name: 'Rose'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: false,
+                    favors: 'apple'
                 }
             },
             true
         );
         testQuery(
             {
-                name: { [Op.is]: /ros/i }
+                name: { [Op.is]: /mik/i }
             },
             {
                 dataSource: {
-                    name: 'Rosee'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: false,
+                    favors: 'apple'
                 }
             },
             true
         );
 
         testQuery(
-            { isMatch: { [Op.is]: true } }, // String.match
+            { deleted: { [Op.is]: 'th' } }, // String.match
             {
                 dataSource: {
-                    name: 'Banana',
-                    isMatch: 'true1'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'truthy',
+                    favors: 'apple'
                 }
             },
             true
         );
 
         testQuery(
-            { added: { [Op.is]: true } }, // String.match
+            { deleted: { [Op.is]: true } }, // String.match
             {
                 dataSource: {
-                    name: 'applePen',
-                    added: true
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple'
                 }
             },
             true
@@ -351,33 +410,51 @@ describe('Operator symbols', () => {
     describe('Op.like', () => {
         testQuery(
             {
-                username: { [Op.like]: /mary/ }
+                name: { [Op.like]: /mike/ }
             },
             {
                 dataSource: {
-                    username: 'Mary'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple'
                 }
             },
             false
         );
         testQuery(
             {
-                username: { [Op.like]: /marya/i }
+                name: { [Op.like]: /mi/i }
             },
             {
                 dataSource: {
-                    username: 'MaryAn'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple'
                 }
             },
             true
         );
         testQuery(
             {
-                name: { [Op.like]: ['rya', 'i'] }
+                name: { [Op.like]: ['ke', 'i'] }
             },
             {
                 dataSource: {
-                    name: 'MaryAnn'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple'
                 }
             },
             true
@@ -385,13 +462,19 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                name: {
+                favors: {
                     [Op.like]: 'se'
                 }
             },
             {
                 dataSource: {
-                    name: ['rose', 'mario']
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario']
                 }
             },
             true
@@ -401,13 +484,19 @@ describe('Operator symbols', () => {
             {
                 name: {
                     [Op.like]: {
-                        [Op.any]: ['larry', 'mairio']
+                        [Op.any]: ['mike', 'mairio']
                     }
                 }
             },
             {
                 dataSource: {
-                    name: 'Mario'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario']
                 }
             },
             false
@@ -417,13 +506,19 @@ describe('Operator symbols', () => {
             {
                 name: {
                     [Op.like]: {
-                        [Op.any]: ['a2', 'a2233']
+                        [Op.any]: ['ke', 'niKE']
                     }
                 }
             },
             {
                 dataSource: {
-                    name: 'a22'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario']
                 }
             },
             true
@@ -437,29 +532,47 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
-                    name: 'Mario'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario']
                 }
             },
             true
         );
         testQuery(
             {
-                username: { [Op.notLike]: /marya/i }
+                name: { [Op.notLike]: /marya/i }
             },
             {
                 dataSource: {
-                    username: 'Mary'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario']
                 }
             },
             true
         );
         testQuery(
             {
-                name: { [Op.notLike]: ['rya', 'g'] }
+                name: { [Op.notLike]: ['mike', 'g'] }
             },
             {
                 dataSource: {
-                    name: 'MaryAnn'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario']
                 }
             },
             true
@@ -467,13 +580,19 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                name: {
+                favors: {
                     [Op.notLike]: 'see'
                 }
             },
             {
                 dataSource: {
-                    name: ['rose', 'mar']
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario']
                 }
             },
             true
@@ -481,11 +600,17 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                username: { [Op.notLike]: ['mary$', 'i'] }
+                name: { [Op.notLike]: ['mary$', 'i'] }
             },
             {
                 dataSource: {
-                    username: 'maryen'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario']
                 }
             },
             true
@@ -498,30 +623,46 @@ describe('Operator symbols', () => {
             {
                 dataSource: {
                     id: 1,
-                    name: 'HTML',
-                    alias: 'HTML'
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario'],
+                    alias: 'Mike'
                 }
             },
             true
         );
 
         testQuery(
-            { hobby: { [Op.col]: 'favor' } },
+            { hobby: { [Op.col]: 'favors' } },
             {
                 dataSource: {
-                    id: 2,
-                    hobby: ['aa', 'bb'],
-                    favor: ['aa', 'bb']
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario'],
+                    hobby: ['rose', 'mario']
                 }
             },
             true
         );
         testQuery(
-            { name: { [Op.eq]: { [Op.col]: 'alias' } } },
+            { favors: { [Op.eq]: { [Op.col]: 'hobby' } } },
             {
                 dataSource: {
-                    name: ['JS', 'CSS'],
-                    alias: ['JS', 'CSS']
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario'],
+                    hobby: ['rose', 'mario']
                 }
             },
             true
@@ -530,45 +671,36 @@ describe('Operator symbols', () => {
             { count: { [Op.like]: { [Op.col]: 'total' } } },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario'],
+                    hobby: ['rose', 'mario'],
                     count: '23aag',
                     total: '3a'
                 }
             },
             true
         );
-        testQuery(
-            { name: { [Op.like]: { [Op.col]: 'alias' } } },
-            {
-                dataSource: {
-                    name: 'sass',
-                    alias: 'ss'
-                }
-            },
-            true
-        );
+
         testQuery(
             { age: { [Op.gt]: { [Op.col]: 'demo.ageAlias' } } },
             {
                 dataSource: {
-                    age: 23,
-                    name: 'javas',
-                    demo: { ageAlias: 11 },
-                    alias: 'js'
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                alias: {
-                    [Op.like]: 'NANA'
-                }
-            },
-            {
-                dataSource: {
-                    name: 'banana',
-                    alias: 'BANANA'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['rose', 'mario'],
+                    hobby: ['rose', 'mario'],
+                    count: '23aag',
+                    total: '3a',
+                    demo: { ageAlias: 11 }
                 }
             },
             true
@@ -582,8 +714,13 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
-                    name: 'mike',
-                    age: 11
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple'
                 }
             },
             true
@@ -591,30 +728,38 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                age: { [Op.gte]: 26 }
+                age: { [Op.gte]: 6 }
             },
             {
                 dataSource: {
-                    name: 'lee',
-                    age: 30
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple'
                 }
             },
             true
         );
 
         testQuery(
-            'count',
+            'age',
             {
                 where: {
-                    count: {
-                        [Op.gt]: {
-                            [Op.col]: 'total'
-                        }
+                    age: {
+                        [Op.gt]: 10
                     }
                 },
                 dataSource: {
-                    total: 11,
-                    count: 33
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple'
                 }
             },
             true,
@@ -625,41 +770,60 @@ describe('Operator symbols', () => {
     describe('Op.lt/Op.lte', () => {
         testQuery(
             {
-                count: { [Op.lt]: 5 }
-            },
-            {
-                dataSource: {
-                    id: 2,
-                    count: 2
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                count: { [Op.lte]: 6 }
+                likes: { [Op.lt]: 5 }
             },
             {
                 dataSource: {
                     id: 1,
-                    count: 5
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
                 }
             },
             true
         );
 
         testQuery(
-            'total',
+            {
+                likes: { [Op.lte]: 6 }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            true
+        );
+
+        testQuery(
+            'age',
             {
                 where: {
-                    total: {
-                        [Op.lte]: { [Op.col]: 'count' }
+                    age: {
+                        // [Op.lte]: { [Op.col]: 'count' }
+                        [Op.lte]: 22
                     }
                 },
                 dataSource: {
-                    total: 2,
-                    count: 10
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
                 }
             },
             true,
@@ -670,12 +834,18 @@ describe('Operator symbols', () => {
     describe('Op.in/Op.notIn', () => {
         testQuery(
             {
-                total: { [Op.in]: [1, 3] }
+                likes: { [Op.in]: [1, 3] }
             },
             {
                 dataSource: {
-                    total: 3,
-                    id: 4
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
                 }
             },
             true
@@ -683,12 +853,58 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                grade: { [Op.notIn]: [] }
+                likes: { [Op.in]: [1, '11'] }
             },
             {
                 dataSource: {
-                    id: 3,
-                    grade: 5
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: '11'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                likes: { [Op.in]: { up: 11, down: 1 } }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 11
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                likes: { [Op.in]: [1, '11', { up: 11 }] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: {
+                        up: 11
+                    }
                 }
             },
             true
@@ -700,7 +916,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
-                    id: 2,
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3,
                     grade: 6
                 }
             },
@@ -709,26 +932,100 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                count: { [Op.notIn]: [3, 11] }
+                grade: { [Op.notIn]: [] }
             },
             {
                 dataSource: {
                     id: 1,
-                    count: 6
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3,
+                    grade: 5
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                likes: { [Op.notIn]: [32, 11] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                likes: { [Op.notIn]: [1, '11', { up: 11 }] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: {
+                        up: 11,
+                        down: 1
+                    }
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                likes: { [Op.notIn]: { up: 11, down: 1 } }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 10
                 }
             },
             true
         );
     });
 
-    describe('Op.ne/Op.neq/Op.eq', () => {
+    describe('Op.eq', () => {
         testQuery(
             {
-                age: { [Op.eq]: 35 }
+                age: { [Op.eq]: 22 }
             },
             {
                 dataSource: {
-                    age: '35'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
                 }
             },
             true
@@ -736,11 +1033,18 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                age: { [Op.eq]: 35 }
+                age: { [Op.eq]: 22 }
             },
             {
                 dataSource: {
-                    age: new Number('35')
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: new Number('22'),
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
                 }
             },
             true
@@ -748,11 +1052,18 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                age: { [Op.eq]: '33' }
+                age: { [Op.eq]: '22' }
             },
             {
                 dataSource: {
-                    age: new Number('33')
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
                 }
             },
             true
@@ -760,11 +1071,18 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                truthy: { [Op.eq]: 1 }
+                deleted: { [Op.eq]: 1 }
             },
             {
                 dataSource: {
-                    truthy: true
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3
                 }
             },
             true
@@ -776,6 +1094,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3,
                     truthy: true
                 }
             },
@@ -784,11 +1110,18 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                name: { [Op.eq]: Symbol('name') }
+                name: { [Op.eq]: Symbol('Mike') }
             },
             {
                 dataSource: {
-                    name: Symbol('name')
+                    id: 1,
+                    country: 'US',
+                    name: Symbol('Mike'),
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3
                 }
             },
             false
@@ -796,35 +1129,18 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                age: { [Op.neq]: Symbol.for('11') }
+                name: { [Op.eq]: Symbol.for('Mike') }
             },
             {
                 dataSource: {
-                    age: Symbol.for('11')
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
-                age: { [Op.eq]: Symbol.for('33') }
-            },
-            {
-                dataSource: {
-                    age: Symbol.for('33')
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                name: { [Op.neq]: Symbol('name') }
-            },
-            {
-                dataSource: {
-                    name: Symbol('name')
+                    id: 1,
+                    country: 'US',
+                    name: Symbol.for('Mike'),
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3
                 }
             },
             true
@@ -836,6 +1152,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3,
                     falsy: 'false'
                 }
             },
@@ -844,11 +1168,37 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                name: { [Op.eq]: 'jack' }
+                age: { [Op.eq]: 22 }
             },
             {
                 dataSource: {
-                    name: 'jack'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: '22',
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                name: { [Op.eq]: 'Mike' }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3
                 }
             },
             true
@@ -860,6 +1210,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3,
                     orders: [1, 2, 3]
                 }
             },
@@ -868,7 +1226,7 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                eq: {
+                other: {
                     [Op.eq]: {
                         a: 1,
                         b: [11, 22, 33]
@@ -877,7 +1235,15 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
-                    eq: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3,
+                    other: {
                         a: 1,
                         b: [11, 22, 33]
                     }
@@ -888,14 +1254,285 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                email: { [Op.ne]: 'jack@gmail.com' }
+                expires: { [Op.eq]: global.BigInt(9007199254740991n) }
             },
             {
                 dataSource: {
-                    email: 'jack@yahoo.com'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3,
+                    expires: global.BigInt('9007199254740991')
                 }
             },
             true
+        );
+    });
+
+    describe('Op.ne/Op.neq', () => {
+        testQuery(
+            {
+                age: { [Op.neq]: 22 }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                age: { [Op.neq]: 22 }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: new Number('22'),
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                age: { [Op.neq]: '22' }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: 'true',
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                deleted: { [Op.neq]: 1 }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                truthy: { [Op.neq]: new Boolean(10) }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3,
+                    truthy: true
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                name: { [Op.neq]: Symbol('Mike') }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: Symbol('Mike'),
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                name: { [Op.neq]: Symbol.for('Mike') }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: Symbol.for('Mike'),
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                falsy: { [Op.neq]: false }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3,
+                    falsy: 'false'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                age: { [Op.neq]: 22 }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: '22',
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                name: { [Op.neq]: 'Mike' }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                orders: { [Op.neq]: [1, 2, 3] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3,
+                    orders: [1, 2, 3]
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                other: {
+                    [Op.neq]: {
+                        a: 1,
+                        b: [11, 22, 33]
+                    }
+                }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3,
+                    other: {
+                        a: 1,
+                        b: [11, 22, 33]
+                    }
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                expires: { [Op.neq]: global.BigInt(9007199254740991n) }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    email: 'jack@yahoo.com',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: 'apple',
+                    likes: 3,
+                    expires: global.BigInt('9007199254740991')
+                }
+            },
+            false
         );
 
         testQuery(
@@ -904,8 +1541,16 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
-                    deletedAt: null,
-                    email: 'jack@yahoo.com'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    email: 'jack@yahoo.com',
+                    age: 22,
+                    authorId: 11,
+                    favors: 'apple',
+                    likes: 3,
+                    expires: global.BigInt('9007199254740991'),
+                    deletedAt: null
                 }
             },
             false
@@ -913,11 +1558,20 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                age: { [Op.ne]: 35 }
+                age: { [Op.ne]: '22' }
             },
             {
                 dataSource: {
-                    age: '35'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    email: 'jack@yahoo.com',
+                    age: 22,
+                    authorId: 11,
+                    favors: 'apple',
+                    likes: 3,
+                    expires: global.BigInt('9007199254740991'),
+                    deletedAt: null
                 }
             },
             false
@@ -925,30 +1579,27 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                expires: { [Op.eq]: global.BigInt(9007199254740991n) }
+                expires: { [Op.neq]: global.BigInt(9007199254740991n) }
             },
             {
                 dataSource: {
-                    expires: global.BigInt('9007199254740991')
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                times: { [Op.neq]: global.BigInt(9007199254740991n) }
-            },
-            {
-                dataSource: {
-                    times: global.BigInt('9007199254740991')
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    email: 'jack@yahoo.com',
+                    age: 22,
+                    authorId: 11,
+                    favors: 'apple',
+                    likes: 3,
+                    expires: global.BigInt('9007199254740991'),
+                    deletedAt: null
                 }
             },
             false
         );
     });
 
-    describe('Op.neqeq/Op.eqeq', () => {
+    describe('Op.eqeq', () => {
         testQuery(
             {
                 truthy: { [Op.eqeq]: 1 }
@@ -1126,6 +1777,265 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
+                id: { [Op.gte]: 20 },
+                time: {
+                    [Op.eqeq]: 20221111
+                }
+            },
+            {
+                dataSource: {
+                    id: 26,
+                    name: 'thinking',
+                    time: 20221111
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                name: { [Op.eqeq]: Symbol('name') }
+            },
+            {
+                dataSource: {
+                    name: Symbol('name')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                expires: { [Op.eqeq]: global.BigInt(9007199254740991n) }
+            },
+            {
+                dataSource: {
+                    expires: global.BigInt('9007199254740991')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                times: { [Op.neqeq]: global.BigInt(9007199254740991n) }
+            },
+            {
+                dataSource: {
+                    times: global.BigInt('9007199254740991')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                name: { [Op.neqeq]: Symbol('name') }
+            },
+            {
+                dataSource: {
+                    name: Symbol('name')
+                }
+            },
+            true
+        );
+    });
+
+    describe('Op.neqeq', () => {
+        testQuery(
+            {
+                truthy: { [Op.eqeq]: 1 }
+            },
+            {
+                dataSource: {
+                    truthy: true
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                truthy: { [Op.neqeq]: 1 }
+            },
+            {
+                dataSource: {
+                    truthy: true
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                age: { [Op.eqeq]: 21 }
+            },
+            {
+                dataSource: {
+                    age: '21'
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                eqeq: { [Op.eqeq]: 11 }
+            },
+            {
+                dataSource: {
+                    eqeq: new Number('11')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                age: { [Op.eqeq]: '12' }
+            },
+            {
+                dataSource: {
+                    age: new Number('12')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                age: { [Op.neqeq]: Symbol.for('1') }
+            },
+            {
+                dataSource: {
+                    age: Symbol.for('1')
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                eqeq: { [Op.eqeq]: Symbol.for('11') }
+            },
+            {
+                dataSource: {
+                    eqeq: Symbol.for('11')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                age: { [Op.eqeq]: 22 }
+            },
+            {
+                dataSource: {
+                    age: 22
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                order: { [Op.eqeq]: [1, 2, 3] }
+            },
+            {
+                dataSource: {
+                    order: [1, 2, 3]
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                order: {
+                    [Op.eqeq]: {
+                        aa: 11
+                    }
+                }
+            },
+            {
+                dataSource: {
+                    order: {
+                        aa: 11
+                    }
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                age: { [Op.neqeq]: '23' }
+            },
+            {
+                dataSource: {
+                    age: 23
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                age: { [Op.neqeq]: 22 }
+            },
+            {
+                dataSource: {
+                    age: 22
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                email: { [Op.neqeq]: 'jack@gmail.com' }
+            },
+            {
+                dataSource: {
+                    email: 'jack@yahoo.com'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                deletedAt: { [Op.neqeq]: null }
+            },
+            {
+                dataSource: {
+                    deletedAt: null,
+                    email: 'jack@yahoo.com'
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                id: { [Op.gte]: 20 },
+                time: {
+                    [Op.eqeq]: 20221111
+                }
+            },
+            {
+                dataSource: {
+                    id: 26,
+                    name: 'thinking',
+                    time: 20221111
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
                 name: { [Op.eqeq]: Symbol('name') }
             },
             {
@@ -1176,11 +2086,21 @@ describe('Operator symbols', () => {
     describe('Op.startsWith/Op.endsWith', () => {
         testQuery(
             {
-                name: { [Op.startsWith]: 'sup' }
+                name: { [Op.startsWith]: 'Mi' }
             },
             {
                 dataSource: {
-                    name: 'super mario'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    }
                 }
             },
             true
@@ -1188,11 +2108,21 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                txt: { [Op.endsWith]: 'ript' }
+                name: { [Op.endsWith]: 'ke' }
             },
             {
                 dataSource: {
-                    txt: 'javascript'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    }
                 }
             },
             true
@@ -1202,11 +2132,21 @@ describe('Operator symbols', () => {
     describe('Op.substring', () => {
         testQuery(
             {
-                text: { [Op.substring]: 'we' }
+                name: { [Op.substring]: 'ik' }
             },
             {
                 dataSource: {
-                    text: 'javascript is awesome!'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    }
                 }
             },
             true
@@ -1216,11 +2156,21 @@ describe('Operator symbols', () => {
     describe('Op.any', () => {
         testQuery(
             {
-                name: { [Op.any]: ['larry', 'may'] }
+                name: { [Op.any]: ['Mike', 'larry', 'may'] }
             },
             {
                 dataSource: {
-                    name: 'may'
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    }
                 }
             },
             true
@@ -1228,14 +2178,68 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                name: { [Op.any]: ['larry', 'may'] }
+                favors: { [Op.any]: ['larry', 'may'] }
             },
             {
                 dataSource: {
-                    name: ['larry', 'may']
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    }
                 }
             },
             false
+        );
+
+        testQuery(
+            {
+                favors: { [Op.any]: ['larry', 'may', ['apple', 'orange']] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    }
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                likes: { [Op.any]: ['larry', 'may', { up: 11, down: 1 }] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    }
+                }
+            },
+            true
         );
 
         testQuery(
@@ -1249,6 +2253,17 @@ describe('Operator symbols', () => {
                     }
                 },
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    },
                     level: 2
                 }
             },
@@ -1265,6 +2280,16 @@ describe('Operator symbols', () => {
             {
                 dataSource: {
                     id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    },
                     text: 'hello world!'
                 }
             },
@@ -1277,7 +2302,17 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
-                    id: 2,
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    },
                     text: ['hello world!', 'haha']
                 }
             },
@@ -1286,12 +2321,21 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                name: { [Op.all]: ['jim', 'may'] }
+                favors: { [Op.all]: ['apple', 'orange'] }
             },
             {
                 dataSource: {
-                    id: 4,
-                    name: ['jim', 'may']
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: {
+                        up: 11,
+                        down: 1
+                    }
                 }
             },
             true
@@ -1299,29 +2343,53 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                name: { [Op.all]: ['han', 'jim', 'may'] }
+                likes: {
+                    [Op.all]: [
+                        {
+                            up: 11,
+                            down: 1
+                        }
+                    ]
+                }
             },
             {
                 dataSource: {
-                    id: 4,
-                    name: ['jim', 'may', 'han']
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    likes: [
+                        {
+                            up: 11,
+                            down: 1
+                        }
+                    ]
                 }
             },
-            false
+            true
         );
 
         testQuery(
             'grades',
             {
                 where: {
-                    grades: {
+                    age: {
                         [Op.gt]: {
                             [Op.all]: [11, 10, 17, 19]
                         }
                     }
                 },
                 dataSource: {
-                    grades: 25
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange']
                 }
             },
             true,
@@ -1332,12 +2400,18 @@ describe('Operator symbols', () => {
     describe('Op.between/Op.notBetween', () => {
         testQuery(
             {
-                gradeLevel: { [Op.between]: [2, 6] }
+                grade: { [Op.between]: [2, 6] }
             },
             {
                 dataSource: {
                     id: 1,
-                    gradeLevel: 5
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5
                 }
             },
             true
@@ -1345,12 +2419,18 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                grade: { [Op.notBetween]: [2, 16] }
+                grade: { [Op.notBetween]: [12, 16] }
             },
             {
                 dataSource: {
-                    id: 11,
-                    grade: 115
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5
                 }
             },
             true
@@ -1362,7 +2442,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
-                    id: 3,
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     date: new Date('2010-09-22')
                 }
             },
@@ -1377,6 +2464,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     lang: 'javascript'
                 }
             },
@@ -1389,6 +2484,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     lang: 'java'
                 }
             },
@@ -1401,6 +2504,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     seqs: [11, 22, 33]
                 }
             },
@@ -1413,6 +2524,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     seqs: 11
                 }
             },
@@ -1425,6 +2544,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     lang: ['js', 'html', 'css']
                 }
             },
@@ -1433,10 +2560,18 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                lang: { [Op.contained]: ['css', 'html', 'js'] }
+                lang: { [Op.contained]: ['js', 'html', 'css', 'py'] }
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     lang: ['js', 'html', 'css']
                 }
             },
@@ -1449,6 +2584,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     sources: {
                         a: 1,
                         b: 2,
@@ -1466,6 +2609,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     sources: {
                         c: 3,
                         dd: 4
@@ -1474,16 +2625,25 @@ describe('Operator symbols', () => {
             },
             true
         );
-    });
 
-    describe('Op.overlap', () => {
         testQuery(
             {
-                seqs: { [Op.overlap]: [11, 12] }
+                favors: { [Op.contains]: 'apple' }
             },
             {
                 dataSource: {
-                    seqs: [11, 22, 33]
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    sources: {
+                        c: 3,
+                        dd: 4
+                    }
                 }
             },
             true
@@ -1491,28 +2651,208 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                targets: { [Op.overlap]: ['aa', 'bb'] }
+                sources: { [Op.contains]: { dd: 33 } }
             },
             {
                 dataSource: {
-                    targets: [11, 22, 33]
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    sources: {
+                        c: 3,
+                        dd: 33
+                    }
+                }
+            },
+            true
+        );
+    });
+
+    describe('Op.overlap', () => {
+        // testQuery(
+        //     {
+        //         seqs: { [Op.overlap]: [11, 22] }
+        //     },
+        //     {
+        //         dataSource: {
+        //             id: 1,
+        //             country: 'US',
+        //             name: 'Mike',
+        //             age: 22,
+        //             authorId: 11,
+        //             deleted: true,
+        //             favors: ['apple', 'orange'],
+        //             grade: 5,
+        //             seqs: [100, 333]
+        //         }
+        //     },
+        //     true
+        // );
+
+        testQuery(
+            {
+                range: { [Op.overlap]: [] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    range: []
                 }
             },
             false
         );
 
-        // testQuery(
-        //     {
-        //         range: { [Op.overlap]: [new Date('2010-08-01'), new Date('2010-11-01')] }
-        //     },
-        //     {
-        //         dataSource: {
-        //             id: 1,
-        //             range: [new Date('2010-02-01'), new Date('2010-09-01')]
-        //         }
-        //     },
-        //     true
-        // );
+        testQuery(
+            {
+                range: { [Op.overlap]: ['11:11:11'] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    range: ['11:01:01']
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                range: { [Op.overlap]: ['11:11:11', '22:22:22'] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    range: ['11:01:01', '12:11:11']
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                range: { [Op.overlap]: ['11:11:11 AM', '11:11:11 PM'] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    range: ['11:11:11 AM', '12:11:11 AM']
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                range: { [Op.overlap]: ['2001-10-29', '2001-10-30'] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    range: ['2001-10-30', '2001-10-31']
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                range: { [Op.overlap]: ['2001-Oct-30', '2001-Oct-30'] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    range: ['2001-Oct-30', '2001-Oct-31']
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                range: { [Op.overlap]: [new Date('2010-Aug-01'), new Date('2010-Nov-01')] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    range: [new Date('2010-Feb-01'), new Date('2010-September-01')]
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                range: { [Op.overlap]: ['2010-08-01', '2010-11-01'] }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    range: ['2010-02-01', '2010-09-01']
+                }
+            },
+            true
+        );
     });
 
     describe('Op.isDate', () => {
@@ -1522,8 +2862,75 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
-                    name: 'dood',
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     bod: '1999-11-11 11:22:33'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                bod: { [Op.isDate]: true }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    bod: new Date('1999-11-11 11:22:33')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                bod: { [Op.isDate]: true }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    bod: '1999-Oct-11 11:22:33'
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                bod: { [Op.isDate]: true }
+            },
+            {
+                dataSource: {
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
+                    bod: new Date('1999-Oct-11 11:22:33')
                 }
             },
             true
@@ -1535,7 +2942,14 @@ describe('Operator symbols', () => {
             },
             {
                 dataSource: {
-                    name: 'puppy',
+                    id: 1,
+                    country: 'US',
+                    name: 'Mike',
+                    age: 22,
+                    authorId: 11,
+                    deleted: true,
+                    favors: ['apple', 'orange'],
+                    grade: 5,
                     since: 'not-a-valid-date'
                 }
             },

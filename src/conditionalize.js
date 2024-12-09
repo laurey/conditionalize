@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import Op from './operators';
 import * as Utils from './helpers';
-import { warn } from './utils';
+import { warn, isPrimitive, isUndef } from './utils';
 import OperatorHelpers from './operatorHelpers';
 import { validator as Validator } from './validator-extras';
 import { version } from '../package.json';
@@ -187,6 +187,10 @@ class Conditionalize {
     }
 
     _getInValue(value, target) {
+        if (!isPrimitive(target)) {
+            return !!_.find(value, target);
+        }
+
         return _.includes(value, target);
     }
 
@@ -240,14 +244,77 @@ class Conditionalize {
         return _.includes(value, other);
     }
 
+    _getOverlapValue(value, other) {
+        if (!Array.isArray(value) || !Array.isArray(other)) {
+            // const msg = `Expect typeof value to be array, but got: "${
+            //     Array.isArray(value) ? typeof other : typeof value
+            // }".`;
+            // warn(msg);
+            return false;
+        }
+
+        function _isTime(param) {
+            return (
+                Validator.isTime(param, { hourFormat: 'hour12' }) ||
+                Validator.isTime(param, { hourFormat: 'hour12', mode: 'withSeconds' }) ||
+                Validator.isTime(param, { hourFormat: 'hour24' }) ||
+                Validator.isTime(param, { hourFormat: 'hour24', mode: 'withSeconds' })
+            );
+        }
+
+        function _isValidEndPoint(param) {
+            return Validator.isDate(param) || _isTime(param);
+        }
+
+        function __getOverlapValue(value, other) {
+            const len = value.length;
+            const length = other.length;
+
+            if (len !== 2 || length !== 2) {
+                // const msg = `Expect length of array to be 2, but got: "${Math.min(len, length)}".`;
+                // warn(msg);
+                return false;
+            }
+
+            let [ts1, te1] = value;
+            let [ts2, te2] = other;
+
+            if (!_isValidEndPoint(ts1) || !_isValidEndPoint(ts2)) {
+                return false;
+            }
+
+            if (!_isValidEndPoint(te1) || !_isValidEndPoint(te2)) {
+                return false;
+            }
+
+            if (ts1 > ts2 && ts1 < te2) {
+                return true;
+            }
+
+            if (ts1 < ts2 && ts2 < te1) {
+                return true;
+            } else if (_.isEqual(ts1, ts2)) {
+                if (isUndef(te1) || isUndef(te2)) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        return __getOverlapValue(value, other);
+    }
+
     _joinKeyValue(key, value, prop, options) {
-        const targetValue = _.get(options.dataSource, key);
         if (typeof key !== 'string' && !Array.isArray(key)) {
             const msg = `Expect typeof key to be string or array, but got: "${typeof key}".`;
             warn(msg);
             throw new Error(msg);
         }
 
+        const targetValue = _.get(options.dataSource, key);
         switch (prop) {
             case Op.eq:
                 return Utils.isPrimitive(value) || Utils.isPrimitive(targetValue)
@@ -284,7 +351,7 @@ class Conditionalize {
                 return this._getLikeValue(key, value, prop, options) === value;
             case Op.in:
             case Op.notIn:
-                return prop === Op.in ? _.includes(value, targetValue) : !_.includes(value, targetValue);
+                return prop === Op.in ? this._getInValue(value, targetValue) : !this._getInValue(value, targetValue);
             case Op.startsWith:
                 return typeof targetValue === 'string' && typeof value === 'string' && _.startsWith(targetValue, value);
             case Op.endsWith:
@@ -326,11 +393,12 @@ class Conditionalize {
                 }
 
                 if (prop === Op.overlap) {
-                    if (!Array.isArray(targetValue)) {
-                        throw new Error(`The key '${key}' value should be array type.`);
-                    }
+                    // if (!Array.isArray(targetValue)) {
+                    //     throw new Error(`The key '${key}' value should be array type.`);
+                    // }
 
-                    return _.intersection(value, targetValue).length > 0;
+                    // return _.intersection(value, targetValue).length > 0;
+                    return this._getOverlapValue(targetValue, value);
                 }
         }
 
