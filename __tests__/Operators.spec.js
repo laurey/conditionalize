@@ -1614,11 +1614,11 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                truthy: { [Op.neqeq]: 1 }
+                age: { [Op.eqeq]: Symbol.for('11') }
             },
             {
                 dataSource: {
-                    truthy: true
+                    age: Symbol.for('11')
                 }
             },
             true
@@ -1638,11 +1638,23 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                eqeq: { [Op.eqeq]: 11 }
+                age: { [Op.eqeq]: NaN }
             },
             {
                 dataSource: {
-                    eqeq: new Number('11')
+                    age: NaN
+                }
+            },
+            false
+        );
+
+        testQuery(
+            {
+                total: { [Op.eqeq]: 11 }
+            },
+            {
+                dataSource: {
+                    total: new Number('11')
                 }
             },
             false
@@ -1658,42 +1670,6 @@ describe('Operator symbols', () => {
                 }
             },
             false
-        );
-
-        testQuery(
-            {
-                age: { [Op.neqeq]: Symbol.for('1') }
-            },
-            {
-                dataSource: {
-                    age: Symbol.for('1')
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
-                eqeq: { [Op.eqeq]: Symbol.for('11') }
-            },
-            {
-                dataSource: {
-                    eqeq: Symbol.for('11')
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                age: { [Op.eqeq]: 22 }
-            },
-            {
-                dataSource: {
-                    age: 22
-                }
-            },
-            true
         );
 
         testQuery(
@@ -1728,43 +1704,7 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                age: { [Op.neqeq]: '23' }
-            },
-            {
-                dataSource: {
-                    age: 23
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                age: { [Op.neqeq]: 22 }
-            },
-            {
-                dataSource: {
-                    age: 22
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
-                email: { [Op.neqeq]: 'jack@gmail.com' }
-            },
-            {
-                dataSource: {
-                    email: 'jack@yahoo.com'
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                deletedAt: { [Op.neqeq]: null }
+                deletedAt: { [Op.eqeq]: null }
             },
             {
                 dataSource: {
@@ -1772,36 +1712,7 @@ describe('Operator symbols', () => {
                     email: 'jack@yahoo.com'
                 }
             },
-            false
-        );
-
-        testQuery(
-            {
-                id: { [Op.gte]: 20 },
-                time: {
-                    [Op.eqeq]: 20221111
-                }
-            },
-            {
-                dataSource: {
-                    id: 26,
-                    name: 'thinking',
-                    time: 20221111
-                }
-            },
             true
-        );
-
-        testQuery(
-            {
-                name: { [Op.eqeq]: Symbol('name') }
-            },
-            {
-                dataSource: {
-                    name: Symbol('name')
-                }
-            },
-            false
         );
 
         testQuery(
@@ -1818,44 +1729,20 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                times: { [Op.neqeq]: global.BigInt(9007199254740991n) }
-            },
-            {
-                dataSource: {
-                    times: global.BigInt('9007199254740991')
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
-                name: { [Op.neqeq]: Symbol('name') }
+                name: { [Op.eqeq]: Symbol('name') }
             },
             {
                 dataSource: {
                     name: Symbol('name')
                 }
             },
-            true
+            false
         );
     });
 
     describe('Op.neqeq', () => {
         testQuery(
             {
-                truthy: { [Op.eqeq]: 1 }
-            },
-            {
-                dataSource: {
-                    truthy: true
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
                 truthy: { [Op.neqeq]: 1 }
             },
             {
@@ -1868,101 +1755,11 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                age: { [Op.eqeq]: 21 }
+                age: { [Op.neqeq]: Symbol.for('11') }
             },
             {
                 dataSource: {
-                    age: '21'
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
-                eqeq: { [Op.eqeq]: 11 }
-            },
-            {
-                dataSource: {
-                    eqeq: new Number('11')
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
-                age: { [Op.eqeq]: '12' }
-            },
-            {
-                dataSource: {
-                    age: new Number('12')
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
-                age: { [Op.neqeq]: Symbol.for('1') }
-            },
-            {
-                dataSource: {
-                    age: Symbol.for('1')
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
-                eqeq: { [Op.eqeq]: Symbol.for('11') }
-            },
-            {
-                dataSource: {
-                    eqeq: Symbol.for('11')
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                age: { [Op.eqeq]: 22 }
-            },
-            {
-                dataSource: {
-                    age: 22
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                order: { [Op.eqeq]: [1, 2, 3] }
-            },
-            {
-                dataSource: {
-                    order: [1, 2, 3]
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
-                order: {
-                    [Op.eqeq]: {
-                        aa: 11
-                    }
-                }
-            },
-            {
-                dataSource: {
-                    order: {
-                        aa: 11
-                    }
+                    age: Symbol.for('11')
                 }
             },
             false
@@ -1982,23 +1779,65 @@ describe('Operator symbols', () => {
 
         testQuery(
             {
-                age: { [Op.neqeq]: 22 }
+                age: { [Op.neqeq]: NaN }
             },
             {
                 dataSource: {
-                    age: 22
+                    age: NaN
                 }
             },
-            false
+            true
         );
 
         testQuery(
             {
-                email: { [Op.neqeq]: 'jack@gmail.com' }
+                total: { [Op.neqeq]: 11 }
             },
             {
                 dataSource: {
-                    email: 'jack@yahoo.com'
+                    total: new Number('11')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                age: { [Op.neqeq]: '12' }
+            },
+            {
+                dataSource: {
+                    age: new Number('12')
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                order: { [Op.neqeq]: [1, 2, 3] }
+            },
+            {
+                dataSource: {
+                    order: [1, 2, 3]
+                }
+            },
+            true
+        );
+
+        testQuery(
+            {
+                order: {
+                    [Op.neqeq]: {
+                        aa: 11
+                    }
+                }
+            },
+            {
+                dataSource: {
+                    order: {
+                        aa: 11
+                    }
                 }
             },
             true
@@ -2015,47 +1854,6 @@ describe('Operator symbols', () => {
                 }
             },
             false
-        );
-
-        testQuery(
-            {
-                id: { [Op.gte]: 20 },
-                time: {
-                    [Op.eqeq]: 20221111
-                }
-            },
-            {
-                dataSource: {
-                    id: 26,
-                    name: 'thinking',
-                    time: 20221111
-                }
-            },
-            true
-        );
-
-        testQuery(
-            {
-                name: { [Op.eqeq]: Symbol('name') }
-            },
-            {
-                dataSource: {
-                    name: Symbol('name')
-                }
-            },
-            false
-        );
-
-        testQuery(
-            {
-                expires: { [Op.eqeq]: global.BigInt(9007199254740991n) }
-            },
-            {
-                dataSource: {
-                    expires: global.BigInt('9007199254740991')
-                }
-            },
-            true
         );
 
         testQuery(
